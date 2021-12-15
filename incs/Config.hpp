@@ -12,12 +12,12 @@
 #include "Libft.hpp"
 
 
-class Server;
+// class Server;
 
 class Config 
 {
 	private:
-		// std::map<std::string, Server *> serverMap;
+		// std::map<std::string, Server> serverMap;
 
 	public:
 		void parsingConfig(std::string path);
