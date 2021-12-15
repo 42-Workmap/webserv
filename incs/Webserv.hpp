@@ -25,8 +25,6 @@ class Webserv
 		int kq;
 		struct kevent return_events[1024];
 		std::vector<FdBase *> m_fd_pool;
-		std::map<std::string, std::string> m_mimetype;
-		Config *config;
 
 	public:
 		Webserv();

@@ -13,8 +13,7 @@ class Server : public FdBase
 		std::string m_server_name;
 		std::string m_ip;
 		std::string m_port;
-		// std::map<std::string, Location *>LocationMap;
-		// std::vector<Client *> ClientVec;
+		std::map<std::string, Location> LocationMap;
 
 	public:
 		Server();
@@ -26,10 +25,12 @@ class Server : public FdBase
 		void setIp(std::string ip);
 		void setPort(std::string port);
 
-		std::string getServerName(void) const;
-		std::string getIp(void) const;
-		std::string getPort(void) const;
+		std::string &getServerName(void) const;
+		std::string &getIp(void) const;
+		std::string &getPort(void) const;
+		std::map<std::string, Location> &getLocations();
 
+		// Location	&getPerfectLocation(std::string &uri);
 
 };
 
