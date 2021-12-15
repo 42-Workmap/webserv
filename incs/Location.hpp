@@ -8,13 +8,13 @@
 
 class Location {
 	private:
-		int m_max_body_size;
-		bool m_auto_index;
+		int		m_max_body_size;
+		int		m_return_num;
+		bool	m_auto_index;
+		std::string m_root;
 		std::string m_upload_path;
 		std::string m_uri;
 		std::string m_auth_key;
-		std::string m_root;
-		int m_return_num;
 		std::string m_return_url;
 		std::vector<std::string> m_allow_methods;
 		std::vector<std::string> m_indexs;
@@ -26,6 +26,30 @@ class Location {
 		virtual ~Location(){};
 		Location(const Location &src);
 		Location& operator=(const Location &src);
+
+		//get
+		int getMaxBodySize();
+		bool getAutoIndex();
+		std::string getUploadPath();
+		std::string getUri();
+		std::string getAuthKey();
+		std::string getRoot();
+		int getReturnNum();
+		std::string getReturnUri();
+		std::vector<std::string> getAllowMethods();
+		std::vector<std::string> getIndexs();
+		std::map<int, std::string> gtErrorPages();
+		std::map<std::string, std::string> getCgi();
+
+		//set
+		void setMaxBodySize(int size);
+		void setReturnNum(int return_num);
+		void setautoIndex(bool auto_index);
+		void setRoot(std::string root);
+		void setUploadPath(std::string path);
+		void setUri(std::string uri);
+		void setAuthKey(std::string auth_key);
+		void setReturnUri(std::string return_uri);
 };
 
 #endif
