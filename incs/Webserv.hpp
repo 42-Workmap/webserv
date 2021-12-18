@@ -16,14 +16,16 @@
 #include <sys/event.h>
 #include <sys/time.h>
 
+# define MAX_FD_SIZE 1024
+
 class Server;
 class Location;
 
 class Webserv 
 {
 	private:
-		int kq;
-		struct kevent return_events[1024];
+		int m_kq;
+		struct kevent m_return_events[1024];
 		std::vector<FdBase *> m_fd_pool;
 
 	public:

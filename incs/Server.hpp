@@ -2,6 +2,7 @@
 # define SERVER_HPP
 
 #include "FdBase.hpp"
+#include "Location.hpp"
 #include <iostream>
 #include <vector>
 #include <string>
@@ -13,7 +14,7 @@ class Server : public FdBase
 		std::string m_server_name;
 		std::string m_ip;
 		std::string m_port;
-		std::map<std::string, Location> LocationMap;
+		std::map<std::string, Location> m_locationMap;
 
 	public:
 		Server();
@@ -25,9 +26,9 @@ class Server : public FdBase
 		void setIp(std::string ip);
 		void setPort(std::string port);
 
-		std::string &getServerName(void) const;
-		std::string &getIp(void) const;
-		std::string &getPort(void) const;
+		const std::string &getServerName(void) const;
+		const std::string &getIp(void) const;
+		const std::string &getPort(void) const;
 		std::map<std::string, Location> &getLocations();
 
 		// Location	&getPerfectLocation(std::string &uri);
