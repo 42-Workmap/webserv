@@ -35,21 +35,21 @@ class Location {
 		std::string getAuthKey();
 		std::string getRoot();
 		int getReturnNum();
-		std::string getReturnUri();
+		std::string getReturnUrl();
 		std::vector<std::string> getAllowMethods();
 		std::vector<std::string> getIndexs();
-		std::map<int, std::string> gtErrorPages();
+		std::map<int, std::string> getErrorPages();
 		std::map<std::string, std::string> getCgi();
 
 		//set
 		void setMaxBodySize(int size);
 		void setReturnNum(int return_num);
-		void setautoIndex(bool auto_index);
+		void setAutoIndex(bool auto_index);
 		void setRoot(std::string root);
 		void setUploadPath(std::string path);
 		void setUri(std::string uri);
 		void setAuthKey(std::string auth_key);
-		void setReturnUri(std::string return_uri);
+		void setReturnUrl(std::string return_url);
 };
 
 #endif
