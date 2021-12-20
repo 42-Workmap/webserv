@@ -4,6 +4,7 @@ Config* Config::m_config = 0; // static 멤버 변수 초기화
 
 Config::Config()
 {
+	
 }
 
 Config::~Config()
@@ -54,11 +55,11 @@ std::map<std::string, std::string> &Config::getStatusCode()
 	return this->m_status_code;
 }
 
-Server& Config::getLastServer(void)
+Server* Config::getLastServer(void)
 {
 	std::map<std::string, Server>::iterator it = m_server_map.end();
 	it--;
-	return (it->second);
+	return &(it->second);
 }
 
 
@@ -67,6 +68,27 @@ void Config::setWebserv(Webserv* webserv)
 	this->m_webserv = webserv;
 }
 
+bool	Config::isKeyword(std::string keyword)
+{
+	if (keyword == "server" ||
+		keyword == "listen" ||
+		keyword == "server_name" ||
+		keyword == "location" ||
+		keyword == "error_page" ||
+		keyword == "allow_methods" ||
+		keyword == "root" ||
+		keyword == "index" ||
+		keyword == "upload_path" ||
+		keyword == "auto_index" ||
+		keyword == "request_max_body_size" ||
+		keyword == "auth_key" ||
+		keyword == "cgi_info" ||
+		keyword == "return" ||
+		keyword == "}" ||
+		keyword == "{" )
+		return (true);
+	return (false);
+}
 
 void 	Config::parsingConfig(std::string path)
 {
@@ -74,6 +96,9 @@ void 	Config::parsingConfig(std::string path)
 	std::string lines;
 	std::string temp;
 	std::vector<std::string> vinfos;
+	Server *server;
+	Location *location;
+	std::string uri;
 
 	output.open(path, std::ofstream::in);
 	if (output.fail())
@@ -86,17 +111,17 @@ void 	Config::parsingConfig(std::string path)
 		std::cout << temp << std::endl;
 		lines += temp;
 	}
-	ft_split(lines, " \t", vinfos);
+	ft_split(lines, " \t}{", vinfos);
 	for (std::vector<std::string>::const_iterator it = vinfos.begin(); it != vinfos.end(); it++)
 	{
 		if (*it == "server_name")
 		{
-			*it++;
+			it++;
 			std::string server_name = *it;
-			*it++;
-			*it++;
+			it++;
+			it++;
 			std::string port = *it;
-			*it++;
+			it++;
 			std::string ip = *it;
 			std::string key = ip +":"+ port;
 			if (getServerMap().find(key) != getServerMap().end())
@@ -106,15 +131,96 @@ void 	Config::parsingConfig(std::string path)
 			getServerMap()[key].setServerName(server_name);
 			getServerMap()[key].setIp(ip);
 			getServerMap()[key].setPort(port);
-			std::cout << getLastServer();
 		}
 		if (*it == "location")
 		{
+			server = getLastServer();
+			it++;
+			uri = *it;
+			if (server->getLocations().find(uri) != server->getLocations().end())
+			{
+				throw "Duplicated Location Uri";
+			}
+			server->getLocations()[uri].setUri(uri);
+			location = &(server->getLocations()[uri]);
+			std::cout << "HI" << location->getUri() << std::endl;
+		}
+		if (*it == "error_page")
+		{
+			it++;
+			int ernum = std::atoi((*it).c_str());
+			it++;
+			location->getErrorPages()[ernum] = *it;
+		}
+		if (*it == "allow_methods")
+		{
+			it++;
+			std::vector<std::string> gpd;
+			gpd.push_back("GET");
+			gpd.push_back("POST");
+			gpd.push_back("DELETE");
+			while (std::find(gpd.begin(), gpd.end(), *it) != gpd.end())
+			{
+				location->getAllowMethods().push_back(*it);
+				it++;
+			}
+			it--;
+		}
+		if (*it == "root")
+		{
+			it++;
+			location->setRoot(*it);
+		}
+		if (*it == "index")
+		{
+			it++;
+			while(!isKeyword(*it))
+			{
+				location->getIndexs().push_back(*it);
+				it++;
+			}
+			it--;
+		}
+		if (*it == "auto_index")
+		{
+			it++;
+			if (*it == "on")
+				location->setAutoIndex(true);
+			else
+				location->setAutoIndex(false);
+		}
+		if (*it == "cgi_info")
+		{
+			it++;
+			std::string cgikey = *it;
+			it++;
+			location->getCgi()[cgikey] = *it;
 
 		}
-	}
-	
+		if (*it == "auth_key")
+		{
+			it++;
+			location->setAuthKey(*it);
+		}
+		if (*it == "return")
+		{
+			it++;
+			location->setReturnNum(std::atoi((*it).c_str()));
+			it++;
+			location->setReturnUrl(*it);
+		}
+		if (*it == "request_max_body_size")
+		{
+			it++;
+			location->setMaxBodySize(std::atoi((*it).c_str()));
+		}
 
+
+	}
+	for (std::map<std::string, Server>::iterator k = getServerMap().begin(); k != getServerMap().end(); k++)
+	{
+		std::cout << k->second;
+	}
 
 	output.close();
 }

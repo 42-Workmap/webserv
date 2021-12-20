@@ -6,6 +6,8 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <cstdlib>
+#include <set>
 
 #include "Server.hpp"
 #include "Location.hpp"
@@ -39,10 +41,13 @@ class Config
 		std::map<std::string, Server> &getServerMap();
 		std::map<std::string, std::string> &getMimeType();
 		std::map<std::string, std::string> &getStatusCode();
-		Server& getLastServer();
+		Server* getLastServer();
 
 		//set
 		void setWebserv(Webserv* webserv);
+
+		//is
+		bool	isKeyword(std::string keyword);
 
 		//add
 		// void addServerMap(std::string ipPort, Server Server);

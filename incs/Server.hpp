@@ -30,7 +30,8 @@ class Server : public FdBase
 		const std::string &getIp(void) const;
 		const std::string &getPort(void) const;
 		std::map<std::string, Location> &getLocations();
-
+		
+		Location& getLastLocation(void);
 		// Location	&getPerfectLocation(std::string &uri);
 
 };

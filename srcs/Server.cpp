@@ -71,10 +71,57 @@ std::map<std::string, Location> &Server::getLocations()
 	return (this->m_locationMap);
 }
 
+Location& Server::getLastLocation(void)
+{
+	std::map<std::string, Location>::iterator it = m_locationMap.end();
+	it--;
+	return (it->second);
+}
+
 std::ostream &operator<<(std::ostream &o, Server &server)
 {
+	o << "==========Server==========" << std::endl;
 	o << "IP: " << server.getIp() << std::endl;
 	o << "Port: " << server.getPort() << std::endl;
 	o << "Server_name: " << server.getServerName() << std::endl;
+
+	o << "----------Location----------" << std::endl;
+	for (std::map<std::string, Location>::iterator iter = server.getLocations().begin(); iter != server.getLocations().end(); iter++)
+	{
+
+		o << "maxbody: " << iter->second.getMaxBodySize() << std::endl;
+		o << "returnNum: " << iter->second.getReturnNum() << std::endl;
+		o << "autoindex: " << iter->second.getAutoIndex() << std::endl;
+		o << "root: " << iter->second.getRoot() << std::endl;
+		o << "Uri: " << iter->second.getUri() << std::endl;
+		o << "authkey: " << iter->second.getAuthKey() << std::endl;
+		o << "returnUrl: " << iter->second.getReturnUrl() << std::endl;
+
+
+		o << "AllowMethods: ";
+		for (std::vector<std::string>::iterator i = iter->second.getAllowMethods().begin(); i != iter->second.getAllowMethods().end(); i++)
+		{
+			o << *i << " ";
+		}
+		o << std::endl << "Indexs: ";
+		for (std::vector<std::string>::iterator i = iter->second.getIndexs().begin(); i != iter->second.getIndexs().end(); i++)
+		{
+			o << *i << " ";
+		}
+		o << std::endl << "ErrorPages : ";
+		for (std::map<int, std::string>::iterator i = iter->second.getErrorPages().begin(); i != iter->second.getErrorPages().end(); i++)
+		{
+			o << (i->first) << " "<< (i->second) << " ";
+		}
+
+		o << std::endl << "Cgis : ";
+		for (std::map<std::string, std::string>::iterator i = iter->second.getCgi().begin(); i != iter->second.getCgi().end(); i++)
+		{
+			o << (i->first) << " "<< (i->second) << " ";
+		}
+		o << std::endl;
+	}
+	o << std::endl;
+
 	return o;
 }

@@ -2,7 +2,9 @@
 
 Location::Location()
 {
-	//
+	this->m_max_body_size = INT_MAX;
+	this->m_auto_index = false;
+	this->m_return_num = -1;
 }
 
 Location::~Location()
@@ -30,62 +32,62 @@ Location&	Location::operator=(const Location &src)
 	return *this;
 }
 
-int		Location::getMaxBodySize()
+int		&Location::getMaxBodySize()
 {
 	return m_max_body_size;
 }
 
-bool	Location::getAutoIndex()
+bool	&Location::getAutoIndex()
 {
 	return m_auto_index;
 }
 
-std::string		Location::getUploadPath()
+std::string		&Location::getUploadPath()
 {
 	return m_upload_path;
 }
 
-std::string		Location::getUri()
+std::string		&Location::getUri()
 {
 	return m_uri;
 }
 
-std::string		Location::getAuthKey()
+std::string		&Location::getAuthKey()
 {
 	return m_auth_key;
 }
 
-std::string		Location::getRoot()
+std::string		&Location::getRoot()
 {
 	return m_root;
 }
 
-int		Location::getReturnNum()
+int		&Location::getReturnNum()
 {
 	return m_return_num;
 }
 
-std::string		Location::getReturnUrl()
+std::string		&Location::getReturnUrl()
 {
 	return m_return_url;
 }
 
-std::vector<std::string>	Location::getAllowMethods()
+std::vector<std::string>	&Location::getAllowMethods()
 {
 	return m_allow_methods;
 }
 
-std::vector<std::string>	Location::getIndexs()
+std::vector<std::string>	&Location::getIndexs()
 {
 	return m_indexs;
 }
 
-std::map<int, std::string>	Location::getErrorPages()
+std::map<int, std::string>	&Location::getErrorPages()
 {
 	return m_error_pages;
 }
 
-std::map<std::string, std::string>	Location::getCgi()
+std::map<std::string, std::string>	&Location::getCgi()
 {
 	return m_cgi;
 }
