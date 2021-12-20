@@ -4,7 +4,7 @@ Config* Config::m_config = 0; // static 멤버 변수 초기화
 
 Config::Config()
 {
-	
+
 }
 
 Config::~Config()
@@ -98,7 +98,6 @@ void 	Config::parsingConfig(std::string path)
 	std::vector<std::string> vinfos;
 	Server *server;
 	Location *location;
-	std::string uri;
 
 	output.open(path, std::ofstream::in);
 	if (output.fail())
@@ -108,7 +107,6 @@ void 	Config::parsingConfig(std::string path)
 	}
 	while (getline(output, temp))
 	{
-		std::cout << temp << std::endl;
 		lines += temp;
 	}
 	ft_split(lines, " \t}{", vinfos);
@@ -136,14 +134,13 @@ void 	Config::parsingConfig(std::string path)
 		{
 			server = getLastServer();
 			it++;
-			uri = *it;
+			std::string uri = *it;
 			if (server->getLocations().find(uri) != server->getLocations().end())
 			{
 				throw "Duplicated Location Uri";
 			}
 			server->getLocations()[uri].setUri(uri);
 			location = &(server->getLocations()[uri]);
-			std::cout << "HI" << location->getUri() << std::endl;
 		}
 		if (*it == "error_page")
 		{
