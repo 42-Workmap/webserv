@@ -35,6 +35,30 @@ class Response
 		virtual ~Response();
 		Response(const Response &other);
 		Response &operator=(const Response &other);
+
+		//get
+		bool getReturn();
+		bool getDisconnect();
+		Client* getClient();
+		std::string& getOrigin();
+		std::string getResourcePath();
+		Location* getLocation();
+		std::string getCgiExtention();
+		size_t getWriteIdx();
+		int getFdRead();
+		int getFdWrite();
+
+		//set
+		void setReturn(bool);
+		void setDisconnect(bool);
+		void setClient(Client* client);
+		void setOrigin(std::string origin);
+		void setResourcePath(std::string path);
+		void setLocation(std::string location);
+		void setCgi(std::string cgi);
+		void setWriteIdx(size_t idx);
+		void setFdRead(int fd);
+		void setFdWrite(int fd);
 };
 
 #endif
