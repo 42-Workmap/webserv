@@ -9,4 +9,8 @@ int main(int argc, char **argv)
 		config->parsingConfig(std::string("./configs/default.config"));
 	if (argc >= 2)
 		config->parsingConfig(std::string(argv[1]));
+	Webserv webserv;
+
+	config->setWebserv(&webserv);
+	config->getWebserv()->startServer();
 }

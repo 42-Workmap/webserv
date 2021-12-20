@@ -15,6 +15,7 @@
 #include "Webserv.hpp"
 
 class Server;
+class Webserv;
 
 class Config 
 {

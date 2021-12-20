@@ -214,10 +214,10 @@ void 	Config::parsingConfig(std::string path)
 
 
 	}
-	for (std::map<std::string, Server>::iterator k = getServerMap().begin(); k != getServerMap().end(); k++)
-	{
-		std::cout << k->second;
-	}
+	// for (std::map<std::string, Server>::iterator k = getServerMap().begin(); k != getServerMap().end(); k++)
+	// {
+	// 	std::cout << k->second;
+	// }
 
 	output.close();
 }

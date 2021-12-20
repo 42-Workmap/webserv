@@ -34,6 +34,8 @@ class Server : public FdBase
 		Location& getLastLocation(void);
 		// Location	&getPerfectLocation(std::string &uri);
 
+		
+
 };
 
 std::ostream &operator<<(std::ostream &o, Server &server);

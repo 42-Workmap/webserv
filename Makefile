@@ -11,7 +11,7 @@ FLAGS = -Wall -Wextra -Werror
 DIR_HEADER =	./incs/
 DIR_SRC =		./srcs/
 
-SRC =	main.cpp Config.cpp Libft.cpp FdBase.cpp Server.cpp Location.cpp
+SRC =	main.cpp Config.cpp Libft.cpp FdBase.cpp Server.cpp Location.cpp Webserv.cpp
 
 SRCS = $(addprefix $(DIR_SRC), $(SRC))
 OBJS = $(SRCS:%.cpp=%.o)
