@@ -23,7 +23,7 @@ class Location {
 	
 	public:
 		Location();
-		virtual ~Location(){};
+		virtual ~Location();
 		Location(const Location &src);
 		Location& operator=(const Location &src);
 

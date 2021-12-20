@@ -70,3 +70,11 @@ std::map<std::string, Location> &Server::getLocations()
 {
 	return (this->m_locationMap);
 }
+
+std::ostream &operator<<(std::ostream &o, Server &server)
+{
+	o << "IP: " << server.getIp() << std::endl;
+	o << "Port: " << server.getPort() << std::endl;
+	o << "Server_name: " << server.getServerName() << std::endl;
+	return o;
+}

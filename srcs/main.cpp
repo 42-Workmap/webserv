@@ -2,9 +2,11 @@
 
 int main(int argc, char **argv)
 {
-	Config config;
+	Config *config;
+
+	config = Config::getConfig();
 	if (argc < 2)
-		config.parsingConfig(std::string("./configs/default.config"));
+		config->parsingConfig(std::string("./configs/default.config"));
 	if (argc >= 2)
-		config.parsingConfig(std::string(argv[1]));
+		config->parsingConfig(std::string(argv[1]));
 }

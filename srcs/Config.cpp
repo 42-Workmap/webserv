@@ -1,5 +1,7 @@
 #include "../incs/Config.hpp"
 
+Config* Config::m_config = 0; // static 멤버 변수 초기화 
+
 Config::Config()
 {
 }
@@ -23,24 +25,40 @@ Config::~Config()
 // 	return *this;
 // }
 
+Config* Config::getConfig(void)
+{
+	if (m_config == NULL)
+	{
+		m_config = new Config();
+	}
+	return m_config;
+}
+
 Webserv* Config::getWebserv()
 {
 	return this->m_webserv;
 }
 
-std::map<std::string, Server> Config::getServerMap()
+std::map<std::string, Server> &Config::getServerMap()
 {
 	return this->m_server_map;
 }
 
-std::map<std::string, std::string> Config::getMimeType()
+std::map<std::string, std::string> &Config::getMimeType()
 {
 	return this->m_mime_type;
 }
 
-std::map<std::string, std::string> Config::getStatusCode()
+std::map<std::string, std::string> &Config::getStatusCode()
 {
 	return this->m_status_code;
+}
+
+Server& Config::getLastServer(void)
+{
+	std::map<std::string, Server>::iterator it = m_server_map.end();
+	it--;
+	return (it->second);
 }
 
 
@@ -55,7 +73,7 @@ void 	Config::parsingConfig(std::string path)
 	std::ifstream output;
 	std::string lines;
 	std::string temp;
-	std::vector<std::string> infos;
+	std::vector<std::string> vinfos;
 
 	output.open(path, std::ofstream::in);
 	if (output.fail())
@@ -68,10 +86,35 @@ void 	Config::parsingConfig(std::string path)
 		std::cout << temp << std::endl;
 		lines += temp;
 	}
-	ft_split(lines, " \t", infos);
-	for (std::vector<std::string>::const_iterator it = infos.begin(); it != infos.end(); it++)
+	ft_split(lines, " \t", vinfos);
+	for (std::vector<std::string>::const_iterator it = vinfos.begin(); it != vinfos.end(); it++)
 	{
-		std::cout << *it << " ";
+		if (*it == "server_name")
+		{
+			*it++;
+			std::string server_name = *it;
+			*it++;
+			*it++;
+			std::string port = *it;
+			*it++;
+			std::string ip = *it;
+			std::string key = ip +":"+ port;
+			if (getServerMap().find(key) != getServerMap().end())
+			{
+				throw "Duplicated Server Ip:Port";
+			}
+			getServerMap()[key].setServerName(server_name);
+			getServerMap()[key].setIp(ip);
+			getServerMap()[key].setPort(port);
+			std::cout << getLastServer();
+		}
+		if (*it == "location")
+		{
+
+		}
 	}
+	
+
+
 	output.close();
 }

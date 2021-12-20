@@ -12,7 +12,7 @@
 #include "Libft.hpp"
 #include "Webserv.hpp"
 
-// class Server;
+class Server;
 
 class Config 
 {
@@ -36,12 +36,16 @@ class Config
 
 		//get
 		Webserv* getWebserv();
-		std::map<std::string, Server> getServerMap();
-		std::map<std::string, std::string> getMimeType();
-		std::map<std::string, std::string> getStatusCode();
+		std::map<std::string, Server> &getServerMap();
+		std::map<std::string, std::string> &getMimeType();
+		std::map<std::string, std::string> &getStatusCode();
+		Server& getLastServer();
 
 		//set
 		void setWebserv(Webserv* webserv);
+
+		//add
+		// void addServerMap(std::string ipPort, Server Server);
 };
 
 #endif

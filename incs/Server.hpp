@@ -35,4 +35,6 @@ class Server : public FdBase
 
 };
 
+std::ostream &operator<<(std::ostream &o, Server &server);
+
 #endif
