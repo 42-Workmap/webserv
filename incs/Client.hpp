@@ -12,8 +12,6 @@
 #include "Server.hpp"
 
 class Server;
-class Response;
-class Request;
 
 class Client : public FdBase
 {

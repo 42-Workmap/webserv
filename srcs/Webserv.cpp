@@ -118,7 +118,26 @@ void Webserv::testServer(void)
 					change_events(m_change_list, clnt_sock, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
 					change_events(m_change_list, clnt_sock, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL);
 
+					Client *clnt = new Client((static_cast<Server *>(m_fd_pool[serv_fd])), clnt_sock);
 					std::cout << "Accepted " << clnt_sock << std::endl;
+					m_fd_pool[clnt_sock] = clnt;
+
+				}
+				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_CLIENT)
+				{
+					char buf[1024];
+					int n;
+
+					if ((n = read(curr_event->ident, buf, sizeof(buf))) == -1)
+					{
+						error_handling("read() error");
+					}
+					if (n >= 0)
+					{
+						std::cout << "Client said:" << buf << std::endl;
+						close(curr_event->ident);
+						delete m_fd_pool[curr_event->ident];
+					} // 원래 n > 0과 n == 0 구분해서 처리하는게 좋음 (노션 참고)
 				}
 			}
 		}

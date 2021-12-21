@@ -6,10 +6,8 @@
 #include <string>
 #include <map>
 
-#include "Client.hpp"
-#include "Response.hpp"
+// #include "Client.hpp"
 
-class Response;
 class Client;
 
 class Request 

@@ -29,6 +29,7 @@ Response& Response::operator=(const Response &other)
 
     m_fd_read = other.m_fd_read;
     m_fd_write = other.m_fd_write;
+    return (*this);
 }
 
 bool Response::getReturn()
@@ -98,7 +99,7 @@ void Response::setClient(Client* client)
 
 void Response::setOrigin(std::string origin)
 {
-    // m_origin = origin;
+    m_origin = origin;
 }
 
 void Response::setResourcePath(std::string path)

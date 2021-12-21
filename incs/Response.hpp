@@ -5,11 +5,12 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <list>
 
-#include "Client.hpp"
-#include "Response.hpp"
+// #include "Client.hpp"
+#include "Location.hpp"
 
-class Response;
+class Location;
 class Client;
 
 class Response 
