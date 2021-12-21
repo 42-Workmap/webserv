@@ -11,12 +11,11 @@
 #include "Request.hpp"
 #include "Server.hpp"
 
-class FDBase;
 class Server;
 class Response;
 class Request;
 
-class Client : public FDBase
+class Client : public FdBase
 {
 	private:
 		Request m_request;
@@ -32,6 +31,15 @@ class Client : public FDBase
 		virtual ~Client();
 		Client(const Client &other);
 		Client &operator=(const Client &other);
+
+		Request &getRequest(void);
+		Response &getResponse(void);
+		const std::string getCStatus(void) const;
+		const struct timeval getLastTime(void) const;
+		Server* getServer(void);
+
+		void setLastTime(struct timeval last_time);
+		void setCStatus(std::string c_status);
 
 };
 

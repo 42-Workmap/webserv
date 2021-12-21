@@ -106,7 +106,7 @@ void Response::setResourcePath(std::string path)
     m_resource_path = path;
 }
 
-void Response::setLocation(std::string location)
+void Response::setLocation(Location *location)
 {
     m_location = location;
 }

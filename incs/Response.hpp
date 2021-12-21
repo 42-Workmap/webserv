@@ -54,7 +54,7 @@ class Response
 		void setClient(Client* client);
 		void setOrigin(std::string origin);
 		void setResourcePath(std::string path);
-		void setLocation(std::string location);
+		void setLocation(Location *location);
 		void setCgi(std::string cgi);
 		void setWriteIdx(size_t idx);
 		void setFdRead(int fd);
