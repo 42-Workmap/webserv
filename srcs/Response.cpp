@@ -117,9 +117,18 @@ void Response::setCgi(std::string cgi)
     m_cgi_extention = cgi;
 }
 
+void Response::setWriteIdx(size_t idx)
+{
+    m_write_idx = idx;
+}
 
+void Response::setFdRead(int fd)
+{
+    m_fd_read = fd;
+}
 
-
-
-
-
+void Response::setFdWrite(int fd)
+{
+    m_fd_write = fd;
+}
+`
