@@ -142,6 +142,10 @@ void Webserv::testServer(void)
 						buf[n] = '\0';
 						clnt->appendOrigin(buf);
 						std::cout << "client "<< curr_event->ident << ": " << buf;
+						if(clnt->getCStatus() == REQUEST_RECEVING && clnt->parseRequest())
+						{
+
+						}
 					}
 				}
 			}

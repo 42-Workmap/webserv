@@ -3,7 +3,7 @@
 Client::Client()
 {
 	this->m_server = 0;
-	this->m_c_status = "REQUEST_RECEIVING";
+	this->m_c_status = REQUEST_RECEIVING;
 	this->m_fd_type = FD_CLIENT;
 	this->m_fd = -1;
 }
@@ -11,7 +11,7 @@ Client::Client()
 Client::Client(Server *server, int c_fd)
 {
 	this->m_server = server;
-	this->m_c_status = "REQUEST_RECEIVING";
+	this->m_c_status = REQUEST_RECEIVING;
 	this->m_fd_type = FD_CLIENT;
 	this->m_fd = c_fd;
 }
@@ -44,7 +44,7 @@ Response &Client::getResponse(void)
 	return (this->m_response);
 }
 
-const std::string Client::getCStatus(void) const
+const e_c_status Client::getCStatus(void) const
 {
 	return (this->m_c_status);
 }
@@ -64,7 +64,7 @@ void Client::setLastTime(struct timeval last_time)
 	this->m_last_time = last_time;
 }
 
-void Client::setCStatus(std::string c_status)
+void Client::setCStatus(e_c_status c_status)
 {
 	this->m_c_status = c_status;
 }
@@ -72,4 +72,17 @@ void Client::setCStatus(std::string c_status)
 void Client::appendOrigin(std::string newstr)
 {
 	this->getRequest().getOrigin() += newstr;
+}
+
+bool Client::parseRequest()
+{
+	int idx = m_request.getOrigin().find("\r\n\r\n");
+	if (idx == std::string::npos)
+		return false;
+	m_request.makeHeader(); // startline, header
+		
+
+
+	
+	
 }

@@ -13,12 +13,19 @@
 
 class Server;
 
+typedef enum t_c_status
+{
+			REQUEST_RECEIVING,
+			RESPONSE_MAKING,
+}			e_c_status;
+
+
 class Client : public FdBase
 {
 	private:
 		Request m_request;
 		Response m_response;
-		std::string m_c_status;
+		e_c_status m_c_status;
 		struct timeval m_last_time;
 
 		Server *m_server;
@@ -32,14 +39,15 @@ class Client : public FdBase
 
 		Request &getRequest(void);
 		Response &getResponse(void);
-		const std::string getCStatus(void) const;
+		const e_c_status getCStatus(void) const;
 		const struct timeval getLastTime(void) const;
 		Server* getServer(void);
 
 		void setLastTime(struct timeval last_time);
-		void setCStatus(std::string c_status);
+		void setCStatus(e_c_status c_status);
 
 		void appendOrigin(std::string newstr);
+		bool parseRequest();
 };
 
 #endif
