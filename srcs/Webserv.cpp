@@ -127,18 +127,21 @@ void Webserv::testServer(void)
 				{
 					char buf[1024];
 					int n = 0;
+					Client *clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
+
 					if ((n = read(curr_event->ident, buf, sizeof(buf))) == -1)
 						error_handling("read() error");
-					else if (n > 0)
-					{
-						buf[n] = '\0';
-						std::cout << "client "<< curr_event->ident << ": " << buf;
-					}
 					else if (n == 0)
 					{
 						close(curr_event->ident);
 						delete m_fd_pool[curr_event->ident];
 						std::cout << "delete client"<<"\n";
+					}
+					else if (n > 0)
+					{
+						buf[n] = '\0';
+						clnt->appendOrigin(buf);
+						std::cout << "client "<< curr_event->ident << ": " << buf;
 					}
 				}
 			}

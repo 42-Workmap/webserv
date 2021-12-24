@@ -39,6 +39,7 @@ class Client : public FdBase
 		void setLastTime(struct timeval last_time);
 		void setCStatus(std::string c_status);
 
+		void appendOrigin(std::string newstr);
 };
 
 #endif

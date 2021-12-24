@@ -68,3 +68,8 @@ void Client::setCStatus(std::string c_status)
 {
 	this->m_c_status = c_status;
 }
+
+void Client::appendOrigin(std::string newstr)
+{
+	this->getRequest().getOrigin() += newstr;
+}

@@ -54,6 +54,7 @@ class Request
 		void setClient(Client* client);
 		void setRemainBodyValue(size_t len);
 
+
 };
 
 #endif
