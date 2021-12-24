@@ -39,8 +39,8 @@ class Client : public FdBase
 
 		Request &getRequest(void);
 		Response &getResponse(void);
-		const e_c_status getCStatus(void) const;
-		const struct timeval getLastTime(void) const;
+		e_c_status &getCStatus(void);
+		struct timeval &getLastTime(void);
 		Server* getServer(void);
 
 		void setLastTime(struct timeval last_time);

@@ -5,10 +5,20 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <sstream>
 
-// #include "Client.hpp"
+#include "Libft.hpp"
 
 class Client;
+
+typedef enum t_req_status
+{
+	HEADER_PARSING, 
+	BODY_PARSING,
+	CHUCKED,
+	CHUCKED_BODY,
+	CONTENT_BODY
+} 			e_req_status;
 
 class Request 
 {
@@ -21,7 +31,7 @@ class Request
 		std::string m_httpver;
 		std::map<std::string, std::string> m_headersMap;
 
-		std::string m_request_status;
+		e_req_status m_request_status;
 
 		Client *m_client;
 		size_t m_remain_body_value;
@@ -39,7 +49,7 @@ class Request
 		std::string& getReqLocation();
 		std::string& getHttpVer();
 		std::map<std::string, std::string>& getHeadersMap();
-		std::string& getRequestStatus();
+		e_req_status& getRequestStatus();
 		Client* getClient();
 		size_t getRemainBodyValue();
 
@@ -50,11 +60,13 @@ class Request
 		void setReqLocation(std::string);
 		void setHttpver(std::string);
 		// void setHeadersMap();
-		void setRequestStatus(std::string);
+		void setRequestStatus(e_req_status);
 		void setClient(Client* client);
 		void setRemainBodyValue(size_t len);
 
-		bool makeHeader();
+		bool makeHeader(void);
+		bool makeBody(void);
+		bool checkValidRequest(std::string fin);
 };
 
 #endif

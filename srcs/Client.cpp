@@ -44,12 +44,12 @@ Response &Client::getResponse(void)
 	return (this->m_response);
 }
 
-const e_c_status Client::getCStatus(void) const
+e_c_status &Client::getCStatus(void)
 {
 	return (this->m_c_status);
 }
 
-const struct timeval Client::getLastTime(void) const
+struct timeval &Client::getLastTime(void)
 {
 	return (this->m_last_time);
 }
@@ -76,13 +76,36 @@ void Client::appendOrigin(std::string newstr)
 
 bool Client::parseRequest()
 {
-	int idx = m_request.getOrigin().find("\r\n\r\n");
-	if (idx == std::string::npos)
-		return false;
-	m_request.makeHeader(); // startline, header
-		
-
-
+	if (m_request.getRequestStatus() == HEADER_PARSING)
+	{
+		std::size_t idx = m_request.getOrigin().find("\r\n\r\n");
+		if (idx == std::string::npos)
+			return false;
+		// m_request.makeStartLine();
+		m_request.makeHeader(); // startline, header
+		m_request.setRequestStatus(BODY_PARSING);
+	}
+	if (m_request.getRequestStatus() == BODY_PARSING)
+	{
+		if ((m_request.getHeadersMap().count("Transfer-Encoding") == 1) && \
+		(m_request.getHeadersMap()["Transfer-Encoding"] == "chucked"))
+		{
+			m_request.setRequestStatus(CHUCKED);
+			return (m_request.makeBody());
+		}
+		else if (m_request.getHeadersMap().count("Content-Length"))
+		{
+			m_request.setRemainBodyValue(atoi(m_request.getHeadersMap()["Content-Length"].c_str()));
+			if (m_request.getRemainBodyValue() == 0)
+			{
+				return (m_request.checkValidRequest("FINISHED"));
+			}
+			m_request.setRequestStatus(CONTENT_BODY);
+			return (m_request.makeBody());
+		}
+		else
+			return (m_request.checkValidRequest("FINSHED"));
+	}
 	
-	
+	return (m_request.makeBody());
 }

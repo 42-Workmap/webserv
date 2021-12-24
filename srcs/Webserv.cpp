@@ -135,14 +135,13 @@ void Webserv::testServer(void)
 					{
 						close(curr_event->ident);
 						delete m_fd_pool[curr_event->ident];
-						std::cout << "delete client"<<"\n";
+						std::cout << "\ndelete client"<<"\n";
 					}
 					else if (n > 0)
 					{
 						buf[n] = '\0';
 						clnt->appendOrigin(buf);
-						std::cout << "client "<< curr_event->ident << ": " << buf;
-						if(clnt->getCStatus() == REQUEST_RECEVING && clnt->parseRequest())
+						if(clnt->getCStatus() == REQUEST_RECEIVING && clnt->parseRequest())
 						{
 
 						}
