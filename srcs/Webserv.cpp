@@ -126,18 +126,20 @@ void Webserv::testServer(void)
 				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_CLIENT)
 				{
 					char buf[1024];
-					int n;
-
+					int n = 0;
 					if ((n = read(curr_event->ident, buf, sizeof(buf))) == -1)
-					{
 						error_handling("read() error");
-					}
-					if (n >= 0)
+					else if (n > 0)
 					{
-						std::cout << "Client said:" << buf << std::endl;
+						buf[n] = '\0';
+						std::cout << "client "<< curr_event->ident << ": " << buf;
+					}
+					else if (n == 0)
+					{
 						close(curr_event->ident);
 						delete m_fd_pool[curr_event->ident];
-					} // 원래 n > 0과 n == 0 구분해서 처리하는게 좋음 (노션 참고)
+						std::cout << "delete client"<<"\n";
+					}
 				}
 			}
 		}

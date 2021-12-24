@@ -43,9 +43,9 @@ int main(int argc, char **argv)
 			break;
 		send(sock, message, strlen(message), 0);
 		/* 메시지 수신 출력 */
-		str_len = recv(sock, message, BUFSIZE - 1, 0);
-		message[str_len] = 0;
-		printf("서버로부터 전송된 메시지 : %s \n", message);
+		// str_len = recv(sock, message, BUFSIZE - 1, 0);
+		// message[str_len] = 0;
+		// printf("서버로부터 전송된 메시지 : %s \n", message);
 	}
 	close(sock);
 	return 0;

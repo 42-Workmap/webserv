@@ -131,4 +131,3 @@ void Response::setFdWrite(int fd)
 {
     m_fd_write = fd;
 }
-`
