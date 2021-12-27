@@ -125,3 +125,30 @@ std::ostream &operator<<(std::ostream &o, Server &server)
 
 	return o;
 }
+
+Location	&Server::getPerfectLocation(std::string &uri)
+{
+	Location *ret = &(this->m_locationMap["/"]);
+	std::string key = "";
+	for (std::string::const_iterator iter = uri.begin(); iter != uri.end(); iter++)
+	{
+		key += *iter;
+		if (*iter == '/')
+		{
+			if (this->m_locationMap.find(key) == this->m_locationMap.end())
+				return (*ret);
+			else
+				ret = &(this->m_locationMap[key]);
+		}
+	}
+	if ( *(--key.end()) != '/') // '/'로 끝나지 않았고
+	{
+		key += '/';
+		if (this->m_locationMap.find(key) != this->m_locationMap.end())
+		{
+			uri = key;
+			return (this->m_locationMap[key]);
+		}
+	}
+	return (*ret);
+}

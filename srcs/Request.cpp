@@ -126,6 +126,46 @@ std::string trim(std::string& str)
     return str.substr(first, (last - first + 1));
 }
 
+int		 	Request::base64_decode(const char * text, char * dst, int numBytes)
+{
+    const char* cp;
+    int space_idx = 0, phase;
+    int d, prev_d = 0;
+    char c;
+    space_idx = 0;
+    phase = 0;
+    for (cp = text; *cp != '\0'; ++cp) {
+        d = Config::decodeMimeBase64[(int)*cp];
+        if (d != -1) {
+            switch (phase) {
+            case 0:
+                ++phase;
+                break;
+            case 1:
+                c = ((prev_d << 2) | ((d & 0x30) >> 4));
+                if (space_idx < numBytes)
+                    dst[space_idx++] = c;
+                ++phase;
+                break;
+            case 2:
+                c = (((prev_d & 0xf) << 4) | ((d & 0x3c) >> 2));
+                if (space_idx < numBytes)
+                    dst[space_idx++] = c;
+                ++phase;
+                break;
+            case 3:
+                c = (((prev_d & 0x03) << 6) | d);
+                if (space_idx < numBytes)
+                    dst[space_idx++] = c;
+                phase = 0;
+                break;
+            }
+            prev_d = d;
+        }
+    }
+    return space_idx;
+}
+
 bool Request::makeHeader(void)
 {
     std::cout << "MakeHEADER()" << std::endl;
@@ -226,8 +266,89 @@ bool Request::checkValidRequest(std::string fin)
         return false;
 
     // 파싱이 끝났으면 올바른지 확인하는 코드가 밑에 있다 
+    Location &loc = m_client->getServer()->getPerfectLocation(this->m_reqlocation);
+	m_client->getResponse().setLocation(&loc);
 
+    if (isValidAuthHeader(loc) == false)
+	{
+        m_client->setCStatus(RESPONSE_MAKING);
+        // this->m_client->getResponse().makeErrorResponse(401);
+        return (false);
+    }
+    if (isValidMethod(loc) == false)
+    {
+        m_client->setCStatus(RESPONSE_MAKING);
+        // this->client->getResponse().makeErrorResponse(405);
+        return (false);
+    }
+    if (isValidRequestMaxBodySize(loc) == false)
+    {
+        m_client->setCStatus(RESPONSE_MAKING);
+        // this->client->getResponse().makeErrorResponse(413);
+        return (false);
+    }
+
+    //GET /index.html http1.1
+	std::string resource_path = loc.getRoot() + this->m_reqlocation.substr(loc.getUri().size());
+    m_client->getResponse().setResourcePath(resource_path);
+
+    for (std::map<std::string, std::string>::iterator iter = loc.getCgi().begin(); iter != loc.getCgi().end(); iter++)
+    {
+        if (resource_path.find(iter->first) != std::string::npos) // cgi_extention 표현을 찾았다면
+        {
+            this->m_client->getResponse().setCgi(iter->first);
+            break;
+        }
+    }
+    if (loc.getReturnNum() != -1)
+        this->m_client->getResponse().setReturn(true);
 
     setRequestStatus(HEADER_PARSING);
     return true;
+}
+
+bool	Request::isValidAuthHeader(Location &loc)
+{
+	if (loc.getAuthKey() != "")
+	{
+		char result[200];
+		ft_memset(result, 0, 200);
+
+		if (this->m_headersMap.find("Authorization") == this->m_headersMap.end())  // auth key 헤더가 아예 안들어왔다.
+		{
+			return (false);
+		}
+		else
+		{
+			size_t idx = this->m_headersMap["Authorization"].find_first_of(' ');
+			std::string secret = this->m_headersMap["Authorization"].substr(idx + 1);
+			base64_decode(secret.c_str(), result, secret.size());
+			if (std::string(result) != loc.getAuthKey()) // 키가 맞지 않는다.
+				return (false);
+		}
+	}
+	return (true);
+}
+
+bool	Request::isValidMethod(Location &loc)
+{
+	bool isAllowCheckOkay = false;
+	for (std::vector<std::string>::iterator iter = loc.getAllowMethods().begin(); iter != loc.getAllowMethods().end(); iter++)
+	{
+		if (this->m_method == *iter)
+		{
+			isAllowCheckOkay = true;
+			break ;
+		}
+	}
+	if (isAllowCheckOkay != true) // allow method check 가 안되었다. -> 405
+		return (false);
+	return (true);
+}
+
+bool	Request::isValidRequestMaxBodySize(Location &loc)
+{
+	if (this->m_body.size() > (size_t)(loc.getMaxBodySize()))
+		return (false);
+	return (true);
 }

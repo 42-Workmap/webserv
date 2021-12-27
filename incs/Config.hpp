@@ -37,6 +37,7 @@ class Config
 		static Config* getConfig();
 		void parsingConfig(std::string path);
 
+		static const int decodeMimeBase64[256];
 		//get
 		Webserv* getWebserv();
 		std::map<std::string, Server> &getServerMap();

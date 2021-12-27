@@ -32,7 +32,7 @@ class Server : public FdBase
 		std::map<std::string, Location> &getLocations();
 		
 		Location& getLastLocation(void);
-		// Location	&getPerfectLocation(std::string &uri);
+		Location& getPerfectLocation(std::string &uri);
 
 		
 

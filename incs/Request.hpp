@@ -8,7 +8,9 @@
 #include <sstream>
 
 #include "Libft.hpp"
-
+#include "Location.hpp"
+// #include "Client.hpp"
+#include "Config.hpp"
 class Client;
 
 typedef enum t_req_status
@@ -34,8 +36,9 @@ class Request
 		e_req_status m_request_status;
 
 		Client *m_client;
-		size_t m_remain_body_value;
-		
+		size_t m_remain_body_value;	
+		int base64_decode(const char * text, char * dst, int numBytes);
+
 	public:
 		Request();
 		virtual ~Request();
@@ -67,6 +70,9 @@ class Request
 		bool makeHeader(void);
 		bool makeBody(void);
 		bool checkValidRequest(std::string fin);
+		bool isValidAuthHeader(Location &loc);
+		bool isValidMethod(Location &loc);
+		bool isValidRequestMaxBodySize(Location &loc);
 };
 
 #endif
