@@ -263,11 +263,15 @@ bool Request::makeBody(void)
 
 bool Request::checkValidRequest(std::string fin)
 {
+    std::cout << "checkValidRequest" << std::endl;
     if (fin != "FINISHED")
+    {
+        std::cout << "checkValidRequest return false" << std::endl;
         return false;
+    }
 
     // 파싱이 끝났으면 올바른지 확인하는 코드가 밑에 있다 
-    Location &loc = m_client->getServer()->getPerfectLocation(this->m_reqlocation);
+    Location &loc = m_client->getServer()->getPerfectLocation(m_reqlocation);
 	m_client->getResponse().setLocation(&loc);
 
     if (isValidAuthHeader(loc) == false)
@@ -279,6 +283,7 @@ bool Request::checkValidRequest(std::string fin)
     if (isValidMethod(loc) == false)
     {
         m_client->setCStatus(RESPONSE_MAKING);
+        std::cout << "405 error" <<std::endl;
         // this->client->getResponse().makeErrorResponse(405);
         return (false);
     }
@@ -310,6 +315,7 @@ bool Request::checkValidRequest(std::string fin)
 
 bool	Request::isValidAuthHeader(Location &loc)
 {
+    std::cout<< "isValidAuthHeader" << "\n";
 	if (loc.getAuthKey() != "")
 	{
 		char result[200];
@@ -333,6 +339,7 @@ bool	Request::isValidAuthHeader(Location &loc)
 
 bool	Request::isValidMethod(Location &loc)
 {
+    std::cout<< "isValidMethod" << "\n";
 	bool isAllowCheckOkay = false;
 	for (std::vector<std::string>::iterator iter = loc.getAllowMethods().begin(); iter != loc.getAllowMethods().end(); iter++)
 	{
@@ -349,6 +356,7 @@ bool	Request::isValidMethod(Location &loc)
 
 bool	Request::isValidRequestMaxBodySize(Location &loc)
 {
+    std::cout << "isValidRequestMaxBodySize" << "\n";
 	if (this->m_body.size() > (size_t)(loc.getMaxBodySize()))
 		return (false);
 	return (true);

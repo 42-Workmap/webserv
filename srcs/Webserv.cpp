@@ -140,10 +140,11 @@ void Webserv::testServer(void)
 					else if (n > 0)
 					{
 						buf[n] = '\0';
+						std::cout << buf << "\n";
 						clnt->appendOrigin(buf);
 						if(clnt->getCStatus() == REQUEST_RECEIVING && clnt->parseRequest())
 						{
-
+							std::cout << "parseRequest end" << std::endl;
 						}
 					}
 				}

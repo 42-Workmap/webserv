@@ -76,6 +76,7 @@ void Client::appendOrigin(std::string newstr)
 
 bool Client::parseRequest()
 {
+	m_request.setClient(this);  //
 	if (m_request.getRequestStatus() == HEADER_PARSING)
 	{
 		std::size_t idx = m_request.getOrigin().find("\r\n\r\n");
@@ -104,7 +105,7 @@ bool Client::parseRequest()
 			return (m_request.makeBody());
 		}
 		else
-			return (m_request.checkValidRequest("FINSHED"));
+			return (m_request.checkValidRequest("FINISHED"));
 	}
 	
 	return (m_request.makeBody());
