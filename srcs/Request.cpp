@@ -1,4 +1,5 @@
 #include "../incs/Request.hpp"
+#include "../incs/Config.hpp"
 
 Request::Request()
 {
@@ -312,7 +313,7 @@ bool	Request::isValidAuthHeader(Location &loc)
 	if (loc.getAuthKey() != "")
 	{
 		char result[200];
-		ft_memset(result, 0, 200);
+		memset(result, 0, 200);
 
 		if (this->m_headersMap.find("Authorization") == this->m_headersMap.end())  // auth key 헤더가 아예 안들어왔다.
 		{

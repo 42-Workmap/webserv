@@ -8,10 +8,9 @@
 #include <sstream>
 
 #include "Libft.hpp"
-#include "Location.hpp"
-// #include "Client.hpp"
-#include "Config.hpp"
+
 class Client;
+class Location;
 
 typedef enum t_req_status
 {
