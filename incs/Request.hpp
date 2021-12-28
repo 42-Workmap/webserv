@@ -16,8 +16,8 @@ typedef enum t_req_status
 {
 	HEADER_PARSING, 
 	BODY_PARSING,
-	CHUCKED,
-	CHUCKED_BODY,
+	CHUNKED,
+	CHUNKED_BODY,
 	CONTENT_BODY
 } 			e_req_status;
 

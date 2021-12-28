@@ -128,14 +128,14 @@ void Webserv::testServer(void)
 					char buf[1024];
 					int n = 0;
 					Client *clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
-
+					memset(buf, 0, 1024);
 					if ((n = read(curr_event->ident, buf, sizeof(buf))) == -1)
 						error_handling("read() error");
 					else if (n == 0)
 					{
 						close(curr_event->ident);
 						delete m_fd_pool[curr_event->ident];
-						std::cout << "\ndelete client"<<"\n";
+						std::cout << std::endl << "delete client" << std::endl;
 					}
 					else if (n > 0)
 					{

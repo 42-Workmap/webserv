@@ -89,9 +89,9 @@ bool Client::parseRequest()
 	if (m_request.getRequestStatus() == BODY_PARSING)
 	{
 		if ((m_request.getHeadersMap().count("Transfer-Encoding") == 1) && \
-		(m_request.getHeadersMap()["Transfer-Encoding"] == "chucked"))
+		(m_request.getHeadersMap()["Transfer-Encoding"] == "chunked"))
 		{
-			m_request.setRequestStatus(CHUCKED);
+			m_request.setRequestStatus(CHUNKED);
 			return (m_request.makeBody());
 		}
 		else if (m_request.getHeadersMap().count("Content-Length"))

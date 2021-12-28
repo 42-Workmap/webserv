@@ -223,9 +223,9 @@ bool Request::makeBody(void)
         }
         return (false);
     }
-    else if (m_request_status == CHUCKED)
+    else if (m_request_status == CHUNKED)
     {
-        std::cout << "Chucked()" << std::endl;
+        std::cout << "Chunked()" << std::endl;
         size_t tmp;
         std::stringstream ss;
         std::size_t found = m_origin.find("\r\n");
@@ -235,26 +235,26 @@ bool Request::makeBody(void)
         {
             ss << std::hex << m_origin.substr(0, found);
             ss >> tmp;
-            m_remain_body_value = tmp;
+            m_remain_body_value = tmp + 2;
             m_origin = m_origin.substr(found+2);
-            m_request_status = CHUCKED_BODY;
+            m_request_status = CHUNKED_BODY;
             return (makeBody());
         }
     }
-    else if (CHUCKED_BODY)
+    else if (CHUNKED_BODY)
     {
         if (m_remain_body_value <= m_origin.size())
         {
-            size_t tmp = m_origin.size();
+            size_t oldbodysize = m_body.size();
             m_body.append(m_origin.substr(0, m_remain_body_value -2));
             m_origin.erase(0, m_remain_body_value);
 
             m_remain_body_value = 0;
-            if (m_body.size() == tmp)
+            if (m_body.size() == oldbodysize)
             {
                 return (checkValidRequest("FINISHED"));
             }
-            m_request_status = CHUCKED;
+            m_request_status = CHUNKED;
             return (makeBody());
         }
     }
@@ -269,7 +269,7 @@ bool Request::checkValidRequest(std::string fin)
         std::cout << "checkValidRequest return false" << std::endl;
         return false;
     }
-
+    std::cout << m_body << std::endl;
     // 파싱이 끝났으면 올바른지 확인하는 코드가 밑에 있다 
     Location &loc = m_client->getServer()->getPerfectLocation(m_reqlocation);
 	m_client->getResponse().setLocation(&loc);
