@@ -118,7 +118,7 @@ void Webserv::testServer(void)
 					change_events(m_change_list, clnt_sock, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
 					change_events(m_change_list, clnt_sock, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL);
 
-					Client *clnt = new Client((static_cast<Server *>(m_fd_pool[serv_fd])), clnt_sock);
+					Client *clnt = new Client((dynamic_cast<Server *>(m_fd_pool[serv_fd])), clnt_sock);
 					std::cout << "Accepted " << clnt_sock << std::endl;
 					m_fd_pool[clnt_sock] = clnt;
 
@@ -145,6 +145,8 @@ void Webserv::testServer(void)
 						if(clnt->getCStatus() == REQUEST_RECEIVING && clnt->parseRequest())
 						{
 							std::cout << "parseRequest end" << std::endl;
+							// clnt->getResponse().makeResponse();
+							clnt->makeResponse();
 						}
 					}
 				}

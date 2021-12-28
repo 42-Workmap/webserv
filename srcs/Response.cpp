@@ -1,4 +1,6 @@
+#include "../incs/Client.hpp"
 #include "../incs/Response.hpp"
+
 
 Response::Response()
 {
@@ -130,4 +132,58 @@ void Response::setFdRead(int fd)
 void Response::setFdWrite(int fd)
 {
     m_fd_write = fd;
+}
+
+void Response::makeResponse()
+{
+//     if(m_cgi_extention != "")
+//         return (makeCgi());
+//     if (m_return)
+//         return (makeRedirect());
+    
+    // if(m_client->getRequest()->getMethod() == "GET" || m_client->getRequest()->getMethod() == "POST")
+    //     std::cout << "GET or POST" << std::endl;
+
+
+}
+
+void Response::makeGetResponse()
+{
+    if (m_client->getCStatus() == MAKE_RESPONSE)
+    {
+        addFirstLine(200);
+        addDate();
+        addContentLanguage();
+        int fd;
+        struct stat sb;
+        size_t idx;
+
+        if(isDirectory(m_resource_path))
+        {
+        }
+        if(!isExist(m_resource_path))   // not found
+        {
+            makeErrorResponse(404);
+        }
+
+        idx = m_resource_path.find_first_of('/');
+        idx = m_resource_path.find_first_of('.', idx);
+
+        if(idx == std::string::npos)
+            addContentType(".bin");
+        else
+            addContentType(m_resource_path.substr(idx));
+
+        if ((fd = open(m_resource_path.c_str(), O_RDONLY)) < 0)
+            return(makeErrorResponse(500));
+        if (fstat(fd, &sb) < 0)
+            return (makeErrorResponse(500));
+        addContentLength((int)sb.st_size);
+        addEmptyLine();
+
+        setResource(fd, FD_TO_RAWDATA, MAKING_RESPONSE);
+    }
+    else if (m_client->getCStatus() == FILE_READ_DONE)
+        m_client->setCStatus(MAKE_RESPONSE_DONE);
+    return ;
 }

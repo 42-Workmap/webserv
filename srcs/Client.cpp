@@ -6,6 +6,8 @@ Client::Client()
 	this->m_c_status = REQUEST_RECEIVING;
 	this->m_fd_type = FD_CLIENT;
 	this->m_fd = -1;
+	this->m_request.setClient(this);
+	this->m_response.setClient(this);
 }
 
 Client::Client(Server *server, int c_fd)
@@ -14,6 +16,8 @@ Client::Client(Server *server, int c_fd)
 	this->m_c_status = REQUEST_RECEIVING;
 	this->m_fd_type = FD_CLIENT;
 	this->m_fd = c_fd;
+	this->m_request.setClient(this);
+	this->m_response.setClient(this);
 }
 Client::~Client()
 {
@@ -76,7 +80,7 @@ void Client::appendOrigin(std::string newstr)
 
 bool Client::parseRequest()
 {
-	m_request.setClient(this);  //
+	// m_request.setClient(this);  //
 	if (m_request.getRequestStatus() == HEADER_PARSING)
 	{
 		std::size_t idx = m_request.getOrigin().find("\r\n\r\n");
@@ -109,4 +113,23 @@ bool Client::parseRequest()
 	}
 	
 	return (m_request.makeBody());
+}
+
+void Client::makeResponse()
+{
+	// Response& response = getResponse();
+//     if(m_cgi_extention != "")
+//         return (makeCgi());
+//     if (m_return)
+//         return (makeRedirect());
+    
+    if(m_request.getMethod() == "GET" || m_request.getMethod() == "POST")
+    {
+		m_response.makeGetResponse();
+	}
+	if(m_request.getMethod() == "DELETE")
+	{
+		std::cout << "delete" << std::endl;
+	}
+	
 }

@@ -16,7 +16,12 @@ class Server;
 typedef enum t_c_status
 {
 			REQUEST_RECEIVING,
-			RESPONSE_MAKING,
+			MAKE_RESPONSE,
+			FILE_READING,
+			FILE_READ_DONE,
+			FILE_WRITING,
+			FILE_WRITE_DONE,
+			MAKE_RESPONSE_DONE
 }			e_c_status;
 
 
@@ -48,6 +53,7 @@ class Client : public FdBase
 
 		void appendOrigin(std::string newstr);
 		bool parseRequest();
+		void makeResponse();
 };
 
 #endif

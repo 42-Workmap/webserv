@@ -6,9 +6,14 @@
 #include <string>
 #include <map>
 #include <list>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 // #include "Client.hpp"
 #include "Location.hpp"
+#include "Resource.hpp"
 
 class Location;
 class Client;
@@ -60,6 +65,20 @@ class Response
 		void setWriteIdx(size_t idx);
 		void setFdRead(int fd);
 		void setFdWrite(int fd);
+
+		void makeResponse();
+		void makeGetResponse();
+		void addFirstLine(int err);
+		void addDate();
+		void addContentLanguage();
+		bool isDirectory(std::string path);
+		bool isExist(std::string path);
+		void makeErrorResponse(int err);
+		void addContentType(std::string type);
+		void addContentLength(int size);
+		void addEmptyLine();
+		void setResource(int fd, e_resource_type type, e_nextcall ctype, int errornum = -1);
+
 };
 
 #endif
