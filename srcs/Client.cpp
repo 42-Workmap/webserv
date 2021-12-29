@@ -125,7 +125,11 @@ void Client::makeResponse()
     
     if(m_request.getMethod() == "GET" || m_request.getMethod() == "POST")
     {
-		m_response.makeGetResponse();
+		if (getCStatus() == MAKE_RESPONSE)
+			m_response.makeGetResponse();
+		else if (getCStatus() == FILE_READ_DONE)
+			this->setCStatus(MAKE_RESPONSE_DONE);
+		return ;
 	}
 	if(m_request.getMethod() == "DELETE")
 	{

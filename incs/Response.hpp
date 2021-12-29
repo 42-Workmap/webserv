@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <time.h>
 
 // #include "Client.hpp"
 #include "Location.hpp"
@@ -25,13 +26,13 @@ class Response
 		bool m_disconnect;
 		Client *m_client;
 
-		std::string m_origin;
+		std::string m_message;
 		std::string m_resource_path;
 		Location *m_location;
 
 		std::string m_cgi_extention;
 		size_t m_write_idx;
-		// std::list<Resource *> m_resourceList;
+		std::list<Resource *> m_resourceList;
 
 		int m_fd_read;
 		int m_fd_write;
@@ -46,7 +47,7 @@ class Response
 		bool getReturn();
 		bool getDisconnect();
 		Client* getClient();
-		std::string& getOrigin();
+		std::string& getMessage();
 		std::string getResourcePath();
 		Location* getLocation();
 		std::string getCgiExtention();
@@ -58,26 +59,29 @@ class Response
 		void setReturn(bool);
 		void setDisconnect(bool);
 		void setClient(Client* client);
-		void setOrigin(std::string origin);
+		void setMessage(std::string message);
 		void setResourcePath(std::string path);
 		void setLocation(Location *location);
 		void setCgi(std::string cgi);
 		void setWriteIdx(size_t idx);
 		void setFdRead(int fd);
 		void setFdWrite(int fd);
+		void setResource(int fd, e_resource_type type, e_nextcall ctype, int errornum = -1);
 
 		void makeResponse();
 		void makeGetResponse();
-		void addFirstLine(int err);
+		void makeErrorResponse(int err);
+		void makeAutoIndexPage(void);
+
+		void addStatusLine(int err);
 		void addDate();
 		void addContentLanguage();
-		bool isDirectory(std::string path);
-		bool isExist(std::string path);
-		void makeErrorResponse(int err);
 		void addContentType(std::string type);
 		void addContentLength(int size);
 		void addEmptyLine();
-		void setResource(int fd, e_resource_type type, e_nextcall ctype, int errornum = -1);
+
+		bool isDirectory(std::string path);
+		bool isExist(std::string path);
 
 };
 

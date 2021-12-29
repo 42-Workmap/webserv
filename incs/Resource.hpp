@@ -8,9 +8,8 @@ class Client;
 
 typedef enum t_resource_types
 {
-    FD_TO_RAWDATA,
-    RAWDATA_TO_FD
-
+    READ_RESOURCE, // FD_TO_RAW_DATA
+    WRITE_RESOURCE // RAWDATA_TO_FD
 }           e_resource_type;
 
 typedef enum			t_nextcall

@@ -26,8 +26,8 @@ class Config
 		Webserv *m_webserv;
 		static Config *m_config;
 		std::map<std::string, Server> m_server_map;
-		std::map<std::string, std::string> m_mime_type;
-		std::map<std::string, std::string> m_status_code;
+		std::map<std::string, std::string> m_mime_typeMap;
+		std::map<std::string, std::string> m_status_codeMap;
 
 	public:
 		Config();
@@ -41,8 +41,8 @@ class Config
 		//get
 		Webserv* getWebserv();
 		std::map<std::string, Server> &getServerMap();
-		std::map<std::string, std::string> &getMimeType();
-		std::map<std::string, std::string> &getStatusCode();
+		std::map<std::string, std::string> &getMimeTypeMap();
+		std::map<std::string, std::string> &getStatusCodeMap();
 		Server* getLastServer();
 
 		//set

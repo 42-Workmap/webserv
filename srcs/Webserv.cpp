@@ -145,7 +145,7 @@ void Webserv::testServer(void)
 						if(clnt->getCStatus() == REQUEST_RECEIVING && clnt->parseRequest())
 						{
 							std::cout << "parseRequest end" << std::endl;
-							// clnt->getResponse().makeResponse();
+							clnt->setCStatus(MAKE_RESPONSE);
 							clnt->makeResponse();
 						}
 					}
