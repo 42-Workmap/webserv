@@ -195,7 +195,7 @@ void Response::makeGetResponse()
         addContentLength((int)sb.st_size);
         addEmptyLine();
         std::cout << m_message << std::endl; // test header 
-        // setResource(fd, FD_TO_RAWDATA, MAKING_RESPONSE);
+        setResource(fd, READ_RESOURCE, MAKING_RESPONSE);
         // setReadResource(fd, READ_FD, MAKING_RESPONSE);
     }
     else if (m_client->getCStatus() == FILE_READ_DONE)
@@ -222,3 +222,24 @@ void Response::makeAutoIndexPage(void)
 //     this->m_resourcesList.push_back(res);
 //     Config::getConfig()->getWebserv()->insertFdPools(res);
 // }
+
+void Response::setResource(int res_fd, e_resource_type type, e_nextcall ctype, int errornum)
+{
+    Resource* res;
+    
+    Webserv* webserv = Config::getConfig()->getWebserv();
+
+    if (type == WRITE_RESOURCE)
+    {
+       //
+    }
+    else if (type == READ_RESOURCE)
+    {
+        res = new Resource(res_fd, m_message, m_client, READ_RESOURCE, ctype, errornum);
+        fcntl(res_fd, F_SETFL, O_NONBLOCK);
+        m_resourceList.push_back(res);
+        webserv->addFdPool(dynamic_cast<FdBase *>(res));
+        webserv->change_events(webserv->getChangeList(), res_fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);  
+        //에러도 넣어야함 깜빡 
+    }
+}

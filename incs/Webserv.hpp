@@ -46,6 +46,9 @@ class Webserv
 		void testServer();
 		void change_events(std::vector<struct kevent> &change_list, uintptr_t ident, int16_t filter,
 			uint16_t flags, uint32_t fflags, intptr_t data, void *udata);
+
+		std::vector<struct kevent>& getChangeList();
+		void addFdPool(FdBase* res);
 };
 
 #endif

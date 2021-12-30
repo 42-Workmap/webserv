@@ -33,11 +33,32 @@ class Resource : public FdBase
         bool m_is_seeked;
 
     public:
-        Resource();
+        // Resource();  // 기본 생성자를 쓸 일이 없음 일단 주석~
+        Resource(int fd, std::string& response_message, Client* clnt, e_resource_type type, e_nextcall nxt, int err);
         virtual ~Resource();
         Resource(Resource & rsc);
         Resource& operator=(Resource& rsc);
 
+        // get
+        std::string& getRawData();
+        std::string getUnlinkPath();
+        Client* getClient();
+        e_resource_type getResourceType();
+        e_nextcall getNextCall();
+        int getResponseErrorNum();
+        size_t getWriteIndex();
+        int getPid();
+        bool getIsSeeked();
+
+        //set
+        void setUnlinkPath(std::string path);
+        void setClient(Client * clnt);
+        void setResourceType(e_resource_type type);
+        void setNext(e_nextcall next);
+        void setResponseErrorNum(int err_num);
+        void setWriteIndex(size_t idx);
+        void setPid(int pid);
+        void setIsSeeked(bool seeked);
 };
 
 

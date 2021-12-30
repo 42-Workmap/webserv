@@ -13,11 +13,14 @@
 #include <time.h>
 
 // #include "Client.hpp"
+#include "Config.hpp"
 #include "Location.hpp"
 #include "Resource.hpp"
 
+
 class Location;
 class Client;
+
 
 class Response 
 {
@@ -66,7 +69,7 @@ class Response
 		void setWriteIdx(size_t idx);
 		void setFdRead(int fd);
 		void setFdWrite(int fd);
-		void setResource(int fd, e_resource_type type, e_nextcall ctype, int errornum = -1);
+		void setResource(int res_fd, e_resource_type type, e_nextcall ctype, int errornum = -1);
 
 		void makeResponse();
 		void makeGetResponse();

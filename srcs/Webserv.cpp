@@ -154,3 +154,14 @@ void Webserv::testServer(void)
 		}
 	}
 }
+
+
+std::vector<struct kevent>& Webserv::getChangeList()
+{
+	return m_change_list;
+}
+
+void Webserv::addFdPool(FdBase* res)
+{
+	m_fd_pool[res->getFd()] = res;
+}
