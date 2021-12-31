@@ -150,6 +150,50 @@ void Webserv::testServer(void)
 						}
 					}
 				}
+				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_RESOURCE)
+				{
+					Resource *rsc = dynamic_cast<Resource *>(m_fd_pool[curr_event->ident]);
+					char buff[10];
+					unsigned long n = 0;
+					memset(buff, 0, 10);
+					if ((n = read(curr_event->ident, buff, sizeof(buff))) < 0)
+					{
+						error_handling("read() error in Resources");
+					}
+					buff[n] = '\0';
+					rsc->getRawData() += buff;
+					if (n < sizeof(buff))
+					{
+						std::cout << rsc->getRawData() << std::endl;
+						rsc->getClient()->setCStatus(MAKE_RESPONSE_DONE);
+						close(curr_event->ident);
+					}
+				}
+			}
+			else if (curr_event->filter == EVFILT_WRITE)
+			{
+				if (m_fd_pool[curr_event->ident]->getFdType() == FD_CLIENT)
+				{
+					Client* clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
+					if (clnt->getCStatus() == MAKE_RESPONSE_DONE)
+					{
+						size_t n;
+
+						Response &rsp = clnt->getResponse();
+						n = write(curr_event->ident, rsp.getMessage().c_str(), rsp.getMessage().size());
+						if (n < 0)
+							error_handling("client write() error");
+						if (n < rsp.getMessage().size())
+						{
+							rsp.getMessage().erase(0, n);
+						}
+						else
+						{
+							clnt->setCStatus(REQUEST_RECEIVING);
+							// clnt->initRequestandResponse();
+						}
+					}
+				}
 			}
 		}
 	}

@@ -239,6 +239,7 @@ void Response::setResource(int res_fd, e_resource_type type, e_nextcall ctype, i
         fcntl(res_fd, F_SETFL, O_NONBLOCK);
         m_resourceList.push_back(res);
         webserv->addFdPool(dynamic_cast<FdBase *>(res));
+        
         webserv->change_events(webserv->getChangeList(), res_fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);  
         //에러도 넣어야함 깜빡 
     }
