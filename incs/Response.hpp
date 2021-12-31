@@ -57,6 +57,7 @@ class Response
 		size_t getWriteIdx();
 		int getFdRead();
 		int getFdWrite();
+		std::list<Resource *>& getResourceList();
 
 		//set
 		void setReturn(bool);

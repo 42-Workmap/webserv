@@ -133,9 +133,10 @@ void Webserv::testServer(void)
 						error_handling("read() error");
 					else if (n == 0)
 					{
-						close(curr_event->ident);
-						delete m_fd_pool[curr_event->ident];
-						std::cout << std::endl << "delete client" << std::endl;
+						deleteFdPool(m_fd_pool[curr_event->ident]);
+						// close(instance->getFd());
+						// delete m_fd_pool[instance->getFd()];
+						// std::cout << std::endl << "delete client" << std::endl;
 					}
 					else if (n > 0)
 					{
@@ -166,7 +167,9 @@ void Webserv::testServer(void)
 					{
 						std::cout << rsc->getRawData() << std::endl;
 						rsc->getClient()->setCStatus(MAKE_RESPONSE_DONE);
-						close(curr_event->ident);
+						// close(curr_event->ident);
+						deleteFdPool(m_fd_pool[curr_event->ident]);
+
 					}
 				}
 			}
@@ -208,4 +211,32 @@ std::vector<struct kevent>& Webserv::getChangeList()
 void Webserv::addFdPool(FdBase* res)
 {
 	m_fd_pool[res->getFd()] = res;
+}
+
+void Webserv::deleteFdPool(FdBase* instance)
+{
+	//cgi는 좀 나중에,,
+	close(instance->getFd());
+	if (instance->getFdType() == FD_CLIENT)
+	{
+		std::cout << instance->getFd() << " : client closed" << std::endl;
+	}
+	else if (instance->getFdType() == FD_RESOURCE)
+	{
+		Resource * res = dynamic_cast<Resource *>(instance);
+		Client *clnt = res->getClient();
+		if (clnt)
+		{
+			std::list<Resource *> rspList = clnt->getResponse().getResourceList();
+			std::list<Resource *>::iterator it = std::find(rspList.begin(), rspList.end(), res);
+			if (it != rspList.end())
+			{
+				rspList.erase(it);
+			}
+		}
+		std::cout << instance->getFd() << " : resource closed" << std::endl;
+	}
+	m_fd_pool[instance->getFd()] = NULL;
+	if (instance->getFdType() != FD_SERVER)
+		delete instance;
 }

@@ -96,6 +96,12 @@ int Response::getFdWrite()
     return m_fd_write;
 }
 
+std::list<Resource *>& Response::getResourceList()
+{
+    return m_resourceList;
+}
+
+
 void Response::setReturn(bool ret)
 {
     m_return = ret;

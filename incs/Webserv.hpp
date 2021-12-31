@@ -50,6 +50,7 @@ class Webserv
 
 		std::vector<struct kevent>& getChangeList();
 		void addFdPool(FdBase* res);
+		void deleteFdPool(FdBase *res);
 };
 
 #endif
