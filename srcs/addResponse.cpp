@@ -72,3 +72,25 @@ void Response::addEmptyLine(void)
 {
 	m_message += "\r\n";
 }
+
+void Response::addErrorBody(int error)
+{
+	std::string body;
+	addDefaultErrorBody(body, error);
+	addContentLength(body.size());
+	addEmptyLine();
+	m_message += body;
+	m_client->setCStatus(MAKE_RESPONSE_DONE);
+}
+
+void Response::addDefaultErrorBody(std::string &body, int errorcode)
+{
+	body += "<!DOCTYPE html>\n";
+	body += "<html>\n";
+	body += "<head>\n";
+	body += "</head>\n";
+	body += "<body>";
+	body += std::to_string(errorcode);
+	body += "</body>\n";
+	body += "</html>\n";
+}

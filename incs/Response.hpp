@@ -83,7 +83,8 @@ class Response
 		void addContentType(std::string type);
 		void addContentLength(int size);
 		void addEmptyLine();
-
+		void addErrorBody(int errorcode); // 다양한 errorcode가 들어간 body 만들어서 return
+		void addDefaultErrorBody(std::string& message, int errorcode);  // 실제 errorcode body 만드는 함수
 		bool isDirectory(std::string path);
 		bool isExist(std::string path);
 

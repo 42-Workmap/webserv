@@ -277,20 +277,20 @@ bool Request::checkValidRequest(std::string fin)
     if (isValidAuthHeader(loc) == false)
 	{
         m_client->setCStatus(MAKE_RESPONSE);
-        // this->m_client->getResponse().makeErrorResponse(401);
+        m_client->getResponse().makeErrorResponse(401);
         return (false);
     }
     if (isValidMethod(loc) == false)
     {
         m_client->setCStatus(MAKE_RESPONSE);
         std::cout << "405 error" <<std::endl;
-        // this->client->getResponse().makeErrorResponse(405);
+        m_client->getResponse().makeErrorResponse(405);
         return (false);
     }
     if (isValidRequestMaxBodySize(loc) == false)
     {
         m_client->setCStatus(MAKE_RESPONSE);
-        // this->client->getResponse().makeErrorResponse(413);
+        m_client->getResponse().makeErrorResponse(413);
         return (false);
     }
 

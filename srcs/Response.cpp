@@ -212,8 +212,31 @@ void Response::makeGetResponse()
 void Response::makeErrorResponse(int errorcode)
 {
     m_message.clear();
-
     addStatusLine(errorcode);
+    addDate();
+    addContentLanguage();
+    addContentType(".html");
+    // if (errorcode == 401)
+    //     addWWWAuthenticate();
+    if (m_location->getErrorPages().count(errorcode) == 0)  // default 에러 페이지 없으면
+        return(addErrorBody(errorcode));
+
+    std::string resource_path = getLocation()->getErrorPages()[errorcode];
+    struct stat sb;
+    int fd;
+    if ((fd = open(resource_path.c_str(), O_RDONLY)) < 0)
+        return (addErrorBody(errorcode));
+    else
+    {
+        if (fstat(fd, &sb) < 0)
+            return (addErrorBody(errorcode));
+        else
+        {
+            addContentLength(int(sb.st_size));
+            addEmptyLine();
+            setResource(fd, READ_RESOURCE, MAKING_RESPONSE);
+        }
+    }
 }
 
 void Response::makeAutoIndexPage(void)
@@ -245,8 +268,6 @@ void Response::setResource(int res_fd, e_resource_type type, e_nextcall ctype, i
         fcntl(res_fd, F_SETFL, O_NONBLOCK);
         m_resourceList.push_back(res);
         webserv->addFdPool(dynamic_cast<FdBase *>(res));
-        
         webserv->change_events(webserv->getChangeList(), res_fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);  
-        //에러도 넣어야함 깜빡 
     }
 }
