@@ -223,10 +223,38 @@ void Response::makeRedirection(void)
     return ;
 }
 
+void Response::makeDeleteResponse(void)
+{
+    std::cout << "Delete() func here" << std::endl;
+    m_message.clear();
+    if (!isExist(m_resource_path))
+        makeErrorResponse(404);
+    else
+    {
+        if (isDirectory(m_resource_path))
+            makeErrorResponse(403);
+        else
+        {
+            int del = unlink(m_resource_path.c_str());
+            if (del < 0)
+                makeErrorResponse(403);
+            else
+            {
+                addStatusLine(204);
+                addDate();
+                addServer();
+                addContentLength(0);
+                addEmptyLine();
+            }
+        }
+    }
+    m_client->setCStatus(MAKE_RESPONSE_DONE);
+}
+
 void Response::makeErrorResponse(int errorcode)
 {
     m_message.clear();
-
+    std::cout << "error" << errorcode << std::endl;
     addStatusLine(errorcode);
 }
 

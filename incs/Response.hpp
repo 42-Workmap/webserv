@@ -75,6 +75,7 @@ class Response
 		void makeResponse(void);
 		void makeGetResponse(void);
 		void makeRedirection(void);
+		void makeDeleteResponse(void);
 		void makeErrorResponse(int err);
 		void makeAutoIndexPage(void);
 

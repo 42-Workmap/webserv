@@ -133,7 +133,9 @@ void Client::makeResponse()
 	}
 	if(m_request.getMethod() == "DELETE")
 	{
-		std::cout << "delete" << std::endl;
+		if (getCStatus() == MAKE_RESPONSE)
+			m_response.makeDeleteResponse();
+		return ;
 	}
 	
 }
