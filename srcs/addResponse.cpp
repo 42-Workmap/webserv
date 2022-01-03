@@ -73,7 +73,6 @@ void Response::addEmptyLine(void)
 	m_message += "\r\n";
 }
 
-<<<<<<< HEAD
 void Response::addErrorBody(int error)
 {
 	std::string body;
