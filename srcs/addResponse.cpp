@@ -73,6 +73,7 @@ void Response::addEmptyLine(void)
 	m_message += "\r\n";
 }
 
+<<<<<<< HEAD
 void Response::addErrorBody(int error)
 {
 	std::string body;
@@ -93,4 +94,14 @@ void Response::addDefaultErrorBody(std::string &body, int errorcode)
 	body += std::to_string(errorcode);
 	body += "</body>\n";
 	body += "</html>\n";
+}
+void Response::addServer(void)
+{
+	m_message += "Server: ft_nginx\r\n";
+}
+
+void Response::addLocation(std::string &url)
+{
+	m_message += "Location: " + url + "\r\n";
+
 }

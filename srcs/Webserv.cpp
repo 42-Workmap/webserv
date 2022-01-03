@@ -188,8 +188,13 @@ void Webserv::testServer(void)
 						}
 						else
 						{
-							clnt->setCStatus(REQUEST_RECEIVING);
-							// clnt->initRequestandResponse();
+							if (rsp.getDisconnect())
+								deleteFdPool(clnt);
+							else
+							{
+								clnt->setCStatus(REQUEST_RECEIVING);
+								// clnt->initRequestandResponse();
+							}
 						}
 					}
 				}
