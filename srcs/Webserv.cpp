@@ -222,7 +222,7 @@ void Webserv::deleteFdPool(FdBase* instance)
 		{
 			for (std::list<Resource *>::iterator it = rspList.begin(); it != rspList.end(); it++)
 			{
-				deleteFdPool(dynamic_cast<FdBase*>(*it));
+				rspList.erase(it);
 			}
 		}
 		std::cout << instance->getFd() << " : client closed" << std::endl;
