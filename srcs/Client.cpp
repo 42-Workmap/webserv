@@ -120,8 +120,8 @@ void Client::makeResponse()
 	// Response& response = getResponse();
 //     if(m_cgi_extention != "")
 //         return (makeCgi());
-//     if (m_return)
-//         return (makeRedirect());
+    if (m_response.getReturn()) 
+        return (m_response.makeRedirection());
     
     if(m_request.getMethod() == "GET" || m_request.getMethod() == "POST")
     {

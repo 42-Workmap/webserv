@@ -72,3 +72,13 @@ void Response::addEmptyLine(void)
 {
 	m_message += "\r\n";
 }
+
+void Response::addServer(void)
+{
+	m_message += "Server: ft_nginx\r\n";
+}
+
+void Response::addLocation(std::string &url)
+{
+	m_message += "Location: " + url + "\r\n";
+}

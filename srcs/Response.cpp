@@ -209,6 +209,20 @@ void Response::makeGetResponse()
     return ;
 }
 
+void Response::makeRedirection(void)
+{
+    m_message.clear();
+    addStatusLine(m_location->getReturnNum());
+    addDate();
+    addServer();
+    addLocation(m_location->getReturnUrl());
+    addEmptyLine();
+    
+    m_client->setCStatus(MAKE_RESPONSE_DONE);
+    setDisconnect(true);
+    return ;
+}
+
 void Response::makeErrorResponse(int errorcode)
 {
     m_message.clear();
@@ -220,14 +234,6 @@ void Response::makeAutoIndexPage(void)
 {
     m_message.clear();
 }
-
-// void Response::setReadResource(int fd, e_resource_type rtype, e_nextcall ncall, int err)
-// {
-//     Resource *res;
-//     res = new Resource(fd, this->m_message, this->m_client, READ_RESOURCE, ncall, err);
-//     this->m_resourcesList.push_back(res);
-//     Config::getConfig()->getWebserv()->insertFdPools(res);
-// }
 
 void Response::setResource(int res_fd, e_resource_type type, e_nextcall ctype, int errornum)
 {

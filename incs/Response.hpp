@@ -72,8 +72,9 @@ class Response
 		void setFdWrite(int fd);
 		void setResource(int res_fd, e_resource_type type, e_nextcall ctype, int errornum = -1);
 
-		void makeResponse();
-		void makeGetResponse();
+		void makeResponse(void);
+		void makeGetResponse(void);
+		void makeRedirection(void);
 		void makeErrorResponse(int err);
 		void makeAutoIndexPage(void);
 
@@ -83,6 +84,8 @@ class Response
 		void addContentType(std::string type);
 		void addContentLength(int size);
 		void addEmptyLine();
+		void addServer();
+		void addLocation(std::string &url);
 
 		bool isDirectory(std::string path);
 		bool isExist(std::string path);
