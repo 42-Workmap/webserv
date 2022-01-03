@@ -95,6 +95,7 @@ void Response::addDefaultErrorBody(std::string &body, int errorcode)
 	body += "</body>\n";
 	body += "</html>\n";
 }
+
 void Response::addServer(void)
 {
 	m_message += "Server: ft_nginx\r\n";
