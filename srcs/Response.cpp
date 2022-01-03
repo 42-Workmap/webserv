@@ -209,9 +209,52 @@ void Response::makeGetResponse()
     return ;
 }
 
+void Response::makeRedirection(void)
+{
+    m_message.clear();
+    addStatusLine(m_location->getReturnNum());
+    addDate();
+    addServer();
+    addLocation(m_location->getReturnUrl());
+    addEmptyLine();
+    
+    m_client->setCStatus(MAKE_RESPONSE_DONE);
+    setDisconnect(true);
+    return ;
+}
+
+void Response::makeDeleteResponse(void)
+{
+    std::cout << "Delete() func here" << std::endl;
+    m_message.clear();
+    if (!isExist(m_resource_path))
+        makeErrorResponse(404);
+    else
+    {
+        if (isDirectory(m_resource_path))
+            makeErrorResponse(403);
+        else
+        {
+            int del = unlink(m_resource_path.c_str());
+            if (del < 0)
+                makeErrorResponse(403);
+            else
+            {
+                addStatusLine(204);
+                addDate();
+                addServer();
+                addContentLength(0);
+                addEmptyLine();
+            }
+        }
+    }
+    m_client->setCStatus(MAKE_RESPONSE_DONE);
+}
+
 void Response::makeErrorResponse(int errorcode)
 {
     m_message.clear();
+    std::cout << "error" << errorcode << std::endl;
     addStatusLine(errorcode);
     addDate();
     addContentLanguage();
@@ -243,14 +286,6 @@ void Response::makeAutoIndexPage(void)
 {
     m_message.clear();
 }
-
-// void Response::setReadResource(int fd, e_resource_type rtype, e_nextcall ncall, int err)
-// {
-//     Resource *res;
-//     res = new Resource(fd, this->m_message, this->m_client, READ_RESOURCE, ncall, err);
-//     this->m_resourcesList.push_back(res);
-//     Config::getConfig()->getWebserv()->insertFdPools(res);
-// }
 
 void Response::setResource(int res_fd, e_resource_type type, e_nextcall ctype, int errornum)
 {

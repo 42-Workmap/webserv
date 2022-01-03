@@ -72,8 +72,10 @@ class Response
 		void setFdWrite(int fd);
 		void setResource(int res_fd, e_resource_type type, e_nextcall ctype, int errornum = -1);
 
-		void makeResponse();
-		void makeGetResponse();
+		void makeResponse(void);
+		void makeGetResponse(void);
+		void makeRedirection(void);
+		void makeDeleteResponse(void);
 		void makeErrorResponse(int err);
 		void makeAutoIndexPage(void);
 
@@ -85,6 +87,9 @@ class Response
 		void addEmptyLine();
 		void addErrorBody(int errorcode); // 다양한 errorcode가 들어간 body 만들어서 return
 		void addDefaultErrorBody(std::string& message, int errorcode);  // 실제 errorcode body 만드는 함수
+		void addServer();
+		void addLocation(std::string &url);
+
 		bool isDirectory(std::string path);
 		bool isExist(std::string path);
 
