@@ -146,7 +146,7 @@ void Webserv::testServer(void)
 							clnt->appendOrigin(buf);
 							if(clnt->getCStatus() == REQUEST_RECEIVING && clnt->parseRequest())
 							{
-								std::cout << "parseRequest end" << std::endl;
+								std::cout << "ParseRequest end\n" << std::endl;
 								clnt->setCStatus(MAKE_RESPONSE);
 								clnt->makeResponse();
 							}
@@ -169,7 +169,6 @@ void Webserv::testServer(void)
 						rsc->getRawData() += buff;
 						if (n < BUFSIZE-1)
 						{
-							std::cout << rsc->getRawData() << std::endl;
 							rsc->getClient()->setCStatus(MAKE_RESPONSE_DONE);
 							deleteFdPool(m_fd_pool[curr_event->ident]);
 
@@ -197,7 +196,6 @@ void Webserv::testServer(void)
 						}
 						else
 						{
-							std::cout << "disconnect() : " << rsp.getDisconnect() << std::endl;
 							if (rsp.getDisconnect())
 								deleteFdPool(clnt);
 							else

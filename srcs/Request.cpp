@@ -169,7 +169,6 @@ int		 	Request::base64_decode(const char * text, char * dst, int numBytes)
 
 bool Request::makeHeader(void)
 {
-    std::cout << "MakeHEADER()" << std::endl;
     std::size_t found = this->m_origin.find("\r\n");
     std::vector<std::string> vFirsts;
     std::string firstline = this->m_origin.substr(0, found);
@@ -263,13 +262,11 @@ bool Request::makeBody(void)
 
 bool Request::checkValidRequest(std::string fin)
 {
-    std::cout << "checkValidRequest" << std::endl;
     if (fin != "FINISHED")
     {
         std::cout << "checkValidRequest return false" << std::endl;
         return false;
     }
-    std::cout << m_body << std::endl;
     // 파싱이 끝났으면 올바른지 확인하는 코드가 밑에 있다 
     Location &loc = m_client->getServer()->getPerfectLocation(m_reqlocation);
 	m_client->getResponse().setLocation(&loc);
