@@ -23,7 +23,7 @@
 #include "../incs/Resource.hpp"
 
 # define MAX_FD_SIZE 1024
-# define BUFSIZE 1024
+# define BUFSIZE 1025
 
 class Server;
 class Location;

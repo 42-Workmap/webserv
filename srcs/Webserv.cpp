@@ -128,10 +128,10 @@ void Webserv::testServer(void)
 					Client *clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
 					if (clnt->getCStatus() == REQUEST_RECEIVING)
 					{
-						char buf[1025];
+						char buf[BUFSIZE];
 						int n = 1;
-						memset(buf, 0, 1025);
-						if ((n = recv(curr_event->ident, buf, sizeof(buf), 0)) == -1)
+						memset(buf, 0, BUFSIZE);
+						if ((n = recv(curr_event->ident, buf, BUFSIZE-1, 0)) == -1)
 							error_handling("read() error");
 
 						if (n == 0)
@@ -158,16 +158,16 @@ void Webserv::testServer(void)
 					Resource *rsc = dynamic_cast<Resource *>(m_fd_pool[curr_event->ident]);
 					if (rsc->getClient()->getCStatus() == MAKE_RESPONSE)
 					{
-						char buff[10];
+						char buff[BUFSIZE];
 						unsigned long n = 0;
-						memset(buff, 0, 10);
-						if ((n = read(curr_event->ident, buff, sizeof(buff))) < 0)
+						memset(buff, 0, BUFSIZE);
+						if ((n = read(curr_event->ident, buff, BUFSIZE-1)) < 0)
 						{
 							error_handling("read() error in Resources");
 						}
 						buff[n] = '\0';
 						rsc->getRawData() += buff;
-						if (n < sizeof(buff))
+						if (n < BUFSIZE-1)
 						{
 							std::cout << rsc->getRawData() << std::endl;
 							rsc->getClient()->setCStatus(MAKE_RESPONSE_DONE);
@@ -220,15 +220,12 @@ void Webserv::testServer(void)
 					if (res->getClient()->getCStatus() == FILE_WRITING)
 					{
 						size_t n = 0;
-						size_t w_idx = res->getWriteIndex();
-						const char *curr_str = (res->getRawData().c_str() + w_idx);
-						n = write(curr_event->ident, curr_str, (res->getRawData().size() - w_idx));
+						n = write(curr_event->ident, res->getRawData().c_str(), (res->getRawData().length()));
 						if (n < 0)
 							error_handling("resource write error");
-						if (n < res->getRawData().size()-w_idx)
+						if (n < res->getRawData().length())
 						{
-							res->setWriteIndex(w_idx + n);
-							// res->getRawData().erase(0,n);
+							res->getRawData().erase(0,n);
 						}
 						else
 						{
