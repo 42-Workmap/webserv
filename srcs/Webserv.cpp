@@ -125,47 +125,55 @@ void Webserv::testServer(void)
 				}
 				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_CLIENT)
 				{
-					char buf[1024];
-					int n = 0;
 					Client *clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
-					memset(buf, 0, 1024);
-					if ((n = read(curr_event->ident, buf, sizeof(buf))) == -1)
-						error_handling("read() error");
-					else if (n == 0)
+					if (clnt->getCStatus() == REQUEST_RECEIVING)
 					{
-						deleteFdPool(m_fd_pool[curr_event->ident]);
-					}
-					else if (n > 0)
-					{
-						buf[n] = '\0';
-						std::cout << buf << "\n";
-						clnt->appendOrigin(buf);
-						if(clnt->getCStatus() == REQUEST_RECEIVING && clnt->parseRequest())
+						char buf[1025];
+						int n = 1;
+						memset(buf, 0, 1025);
+						if ((n = recv(curr_event->ident, buf, sizeof(buf), 0)) == -1)
+							error_handling("read() error");
+
+						if (n == 0)
 						{
-							std::cout << "parseRequest end" << std::endl;
-							clnt->setCStatus(MAKE_RESPONSE);
-							clnt->makeResponse();
+							std::cout << "client read zero!!" << std::endl;
+							deleteFdPool(m_fd_pool[curr_event->ident]);
+						}
+						else if (n > 0)
+						{
+							buf[n] = '\0';
+							std::cout << buf << "\n";
+							clnt->appendOrigin(buf);
+							if(clnt->getCStatus() == REQUEST_RECEIVING && clnt->parseRequest())
+							{
+								std::cout << "parseRequest end" << std::endl;
+								clnt->setCStatus(MAKE_RESPONSE);
+								clnt->makeResponse();
+							}
 						}
 					}
 				}
 				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_RESOURCE)
 				{
 					Resource *rsc = dynamic_cast<Resource *>(m_fd_pool[curr_event->ident]);
-					char buff[10];
-					unsigned long n = 0;
-					memset(buff, 0, 10);
-					if ((n = read(curr_event->ident, buff, sizeof(buff))) < 0)
+					if (rsc->getClient()->getCStatus() == MAKE_RESPONSE)
 					{
-						error_handling("read() error in Resources");
-					}
-					buff[n] = '\0';
-					rsc->getRawData() += buff;
-					if (n < sizeof(buff))
-					{
-						std::cout << rsc->getRawData() << std::endl;
-						rsc->getClient()->setCStatus(MAKE_RESPONSE_DONE);
-						deleteFdPool(m_fd_pool[curr_event->ident]);
+						char buff[10];
+						unsigned long n = 0;
+						memset(buff, 0, 10);
+						if ((n = read(curr_event->ident, buff, sizeof(buff))) < 0)
+						{
+							error_handling("read() error in Resources");
+						}
+						buff[n] = '\0';
+						rsc->getRawData() += buff;
+						if (n < sizeof(buff))
+						{
+							std::cout << rsc->getRawData() << std::endl;
+							rsc->getClient()->setCStatus(MAKE_RESPONSE_DONE);
+							deleteFdPool(m_fd_pool[curr_event->ident]);
 
+						}
 					}
 				}
 			}
@@ -179,10 +187,10 @@ void Webserv::testServer(void)
 						size_t n;
 
 						Response &rsp = clnt->getResponse();
-						n = write(curr_event->ident, rsp.getMessage().c_str(), rsp.getMessage().size());
+						n = write(curr_event->ident, rsp.getMessage().c_str(), rsp.getMessage().length());
 						if (n < 0)
 							error_handling("client write() error");
-						if (n < rsp.getMessage().size())
+						if (n < rsp.getMessage().length())
 						{
 							rsp.getMessage().erase(0, n);
 						}
@@ -193,8 +201,36 @@ void Webserv::testServer(void)
 							else
 							{
 								clnt->setCStatus(REQUEST_RECEIVING);
-								// clnt->initRequestandResponse();
+
+								clnt->initRequestandResponse();
 							}
+						}
+					}
+					else if (clnt->getCStatus() == FILE_WRITE_DONE)
+					{
+						clnt->setCStatus(MAKE_RESPONSE_DONE);
+					}
+				}
+				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_RESOURCE)
+				{
+					Resource* res = dynamic_cast<Resource *>(m_fd_pool[curr_event->ident]);
+					if (res->getClient()->getCStatus() == FILE_WRITING)
+					{
+						size_t n = 0;
+						size_t w_idx = res->getWriteIndex();
+						const char *curr_str = (res->getRawData().c_str() + w_idx);
+						n = write(curr_event->ident, curr_str, (res->getRawData().size() - w_idx));
+						if (n < 0)
+							error_handling("resource write error");
+						if (n < res->getRawData().size()-w_idx)
+						{
+							res->setWriteIndex(w_idx + n);
+							// res->getRawData().erase(0,n);
+						}
+						else
+						{
+							res->getClient()->setCStatus(FILE_WRITE_DONE);
+							deleteFdPool(res);
 						}
 					}
 				}
@@ -217,17 +253,20 @@ void Webserv::addFdPool(FdBase* res)
 // fd close, delete resourceList, m_fd_pool[instance] = NULL, delete instance
 void Webserv::deleteFdPool(FdBase* instance)
 {
+	if (instance == NULL)
+		return ;
 	//cgi는 좀 나중에,,
 	close(instance->getFd());
 	if (instance->getFdType() == FD_CLIENT)
 	{
 		Client *clnt = dynamic_cast<Client *>(instance);
-		std::list<Resource *> rspList = clnt->getResponse().getResourceList();
+		std::list<Resource *> &rspList = clnt->getResponse().getResourceList();
 		if (clnt->getResponse().getResourceList().size() > 1)
 		{
 			for (std::list<Resource *>::iterator it = rspList.begin(); it != rspList.end(); it++)
 			{
-				rspList.erase(it);
+				if (*it)
+					deleteFdPool(dynamic_cast<FdBase*>(*it));
 			}
 		}
 		std::cout << instance->getFd() << " : client closed" << std::endl;
@@ -238,7 +277,7 @@ void Webserv::deleteFdPool(FdBase* instance)
 		Client *clnt = res->getClient();
 		if (clnt)
 		{
-			std::list<Resource *> rspList = clnt->getResponse().getResourceList();
+			std::list<Resource *> &rspList = clnt->getResponse().getResourceList();
 			std::list<Resource *>::iterator it = std::find(rspList.begin(), rspList.end(), res);
 			if (it != rspList.end())
 			{

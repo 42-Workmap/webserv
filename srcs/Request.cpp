@@ -361,3 +361,15 @@ bool	Request::isValidRequestMaxBodySize(Location &loc)
 		return (false);
 	return (true);
 }
+
+void Request::initRequest()
+{
+    m_origin.clear();
+    m_body.clear();
+    m_method.clear();
+    m_reqlocation.clear();
+    m_httpver.clear();
+    m_headersMap.clear();
+    m_request_status = HEADER_PARSING;
+    m_remain_body_value = 0;
+}

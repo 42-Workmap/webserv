@@ -54,6 +54,7 @@ class Client : public FdBase
 		void appendOrigin(std::string newstr);
 		bool parseRequest();
 		void makeResponse();
+		void initRequestandResponse();
 };
 
 #endif

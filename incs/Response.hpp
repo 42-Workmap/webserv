@@ -74,9 +74,10 @@ class Response
 
 		void makeResponse(void);
 		void makeGetResponse(void);
+		void makePostResponse(void);
 		void makeRedirection(void);
 		void makeDeleteResponse(void);
-		void makeErrorResponse(int err);
+		void makeErrorResponse(int err); // 헤더 넣고 바디에 addErrorBody(errorcode) or setResource
 		void makeAutoIndexPage(void);
 
 		void addStatusLine(int err);
@@ -92,6 +93,8 @@ class Response
 
 		bool isDirectory(std::string path);
 		bool isExist(std::string path);
+
+		void initResponse();
 
 };
 

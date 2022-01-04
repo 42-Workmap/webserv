@@ -72,6 +72,8 @@ class Request
 		bool isValidAuthHeader(Location &loc);
 		bool isValidMethod(Location &loc);
 		bool isValidRequestMaxBodySize(Location &loc);
+
+		void initRequest();
 };
 
 #endif

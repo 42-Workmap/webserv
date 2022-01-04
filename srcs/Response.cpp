@@ -154,59 +154,94 @@ void Response::setFdWrite(int fd)
 
 void Response::makeGetResponse()
 {
-    if (m_client->getCStatus() == MAKE_RESPONSE)
+    int fd;
+    struct stat sb;
+    size_t idx;
+
+    if (isDirectory(m_resource_path))
     {
-        int fd;
-        struct stat sb;
-        size_t idx;
-
-        if(isDirectory(m_resource_path))
+        if (*(--m_resource_path.end()) != '/')
         {
-            if (*(--m_resource_path.end()) != '/')
-            {
-                m_resource_path += '/';
-            }
-            bool is_exist = false;
-            std::string pathwithfile;
-            for (std::vector<std::string>::iterator it = m_location->getIndexs().begin(); \
-                it != m_location->getIndexs().end(); it++)
-                {
-                    pathwithfile = m_resource_path + (*it);
-                    is_exist = isExist(pathwithfile);
-                    if (is_exist == true)
-                        break ;
-                }
-            if (is_exist == false && m_location->getAutoIndex() == true)
-                return (makeAutoIndexPage());
-            m_resource_path = pathwithfile;
+            m_resource_path += '/';
         }
-        if (!isExist(m_resource_path))   // not found
-            return (makeErrorResponse(404));
-        if ((fd = open(m_resource_path.c_str(), O_RDONLY)) < 0)
-            return (makeErrorResponse(500));
-        if (fstat(fd, &sb) < 0)
-            return (makeErrorResponse(500));
-
-        // 문제가 없을 경우 헤더 만들기 시작 
-        addStatusLine(200);
-        addDate();
-        addContentLanguage();
-        idx = m_resource_path.find_first_of('/');
-        idx = m_resource_path.find_first_of('.', idx);
-        if(idx == std::string::npos)
-            addContentType(".arc");
-        else
-            addContentType(m_resource_path.substr(idx));
-
-        addContentLength((int)sb.st_size);
-        addEmptyLine();
-        std::cout << m_message << std::endl; // test header 
-        setResource(fd, READ_RESOURCE, MAKING_RESPONSE);
-        // setReadResource(fd, READ_FD, MAKING_RESPONSE);
+        bool is_exist = false;
+        std::string pathwithfile;
+        for (std::vector<std::string>::iterator it = m_location->getIndexs().begin();
+             it != m_location->getIndexs().end(); it++)
+        {
+            pathwithfile = m_resource_path + (*it);
+            is_exist = isExist(pathwithfile);
+            if (is_exist == true)
+                break;
+        }
+        if (is_exist == false && m_location->getAutoIndex() == true)
+            return (makeAutoIndexPage());
+        m_resource_path = pathwithfile;
     }
-    else if (m_client->getCStatus() == FILE_READ_DONE)
-        m_client->setCStatus(MAKE_RESPONSE_DONE);
-    return ;
+    if (!isExist(m_resource_path)) // not found
+        return (makeErrorResponse(404));
+    if ((fd = open(m_resource_path.c_str(), O_RDONLY)) < 0)
+        return (makeErrorResponse(500));
+    if (fstat(fd, &sb) < 0)
+        return (makeErrorResponse(500));
+
+    // 문제가 없을 경우 헤더 만들기 시작
+    addStatusLine(200);
+    addDate();
+    addContentLanguage();
+    idx = m_resource_path.find_first_of('/');
+    idx = m_resource_path.find_first_of('.', idx);
+    if (idx == std::string::npos)
+        addContentType(".arc");
+    else
+        addContentType(m_resource_path.substr(idx));
+
+    addContentLength((int)sb.st_size);
+    addEmptyLine();
+    std::cout << m_message << std::endl; // test header
+    setResource(fd, READ_RESOURCE, MAKING_RESPONSE);
+    // setReadResource(fd, READ_FD, MAKING_RESPONSE);
+}
+
+void Response::makePostResponse(void)
+{
+
+    if (isDirectory(m_resource_path))
+    {
+        makeErrorResponse(400);
+        std::cout << "directory error" << std::endl;
+        return;
+    }
+
+    int fd;
+    if (isExist(m_resource_path))
+    {
+        if ((fd = open(m_resource_path.c_str(), O_WRONLY | O_APPEND, 0777)) < 0)
+        {
+            makeErrorResponse(500);
+            std::cout << "file create error" << std::endl;
+            return;
+        }
+        addStatusLine(204);
+    }
+    else
+    {
+        if ((fd = open(m_resource_path.c_str(), O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0)
+        {
+            makeErrorResponse(500);
+            std::cout << "file open error" << std::endl;
+            return;
+        }
+        addStatusLine(201);
+    }
+    addDate();
+    struct stat sb;
+    if (fstat(fd, &sb) < 0)
+        return (makeErrorResponse(500));
+    addContentLength(0);
+    addEmptyLine();
+    setResource(fd, WRITE_RESOURCE, MAKING_RESPONSE);
+    m_client->setCStatus(FILE_WRITING);
 }
 
 void Response::makeRedirection(void)
@@ -295,14 +330,30 @@ void Response::setResource(int res_fd, e_resource_type type, e_nextcall ctype, i
 
     if (type == WRITE_RESOURCE)
     {
-       //
+       res = new Resource(res_fd, m_client->getRequest().getBody(), m_client, WRITE_RESOURCE, ctype, errornum);
+       m_resourceList.push_back(res);
+       webserv->addFdPool(dynamic_cast<FdBase*>(res));
+       webserv->change_events(webserv->getChangeList(), res_fd, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL);
     }
     else if (type == READ_RESOURCE)
     {
         res = new Resource(res_fd, m_message, m_client, READ_RESOURCE, ctype, errornum);
-        fcntl(res_fd, F_SETFL, O_NONBLOCK);
         m_resourceList.push_back(res);
         webserv->addFdPool(dynamic_cast<FdBase *>(res));
         webserv->change_events(webserv->getChangeList(), res_fd, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);  
     }
+}
+
+void Response::initResponse()
+{
+    m_return = false;
+    m_disconnect = false;
+    m_message.clear();
+    m_resource_path.clear();
+    m_location = NULL;
+    m_cgi_extention.clear();
+    m_write_idx = 0;
+    m_resourceList.clear();
+    m_fd_read = -1;
+    m_fd_write = -1;
 }

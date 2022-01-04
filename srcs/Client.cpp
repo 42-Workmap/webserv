@@ -123,13 +123,20 @@ void Client::makeResponse()
     if (m_response.getReturn()) 
         return (m_response.makeRedirection());
     
-    if(m_request.getMethod() == "GET" || m_request.getMethod() == "POST")
+    if(m_request.getMethod() == "GET")
     {
 		if (getCStatus() == MAKE_RESPONSE)
 			m_response.makeGetResponse();
 		else if (getCStatus() == FILE_READ_DONE)
 			this->setCStatus(MAKE_RESPONSE_DONE);
 		return ;
+	}
+	if (m_request.getMethod() == "POST")
+	{
+		if (getCStatus() == MAKE_RESPONSE)
+		{
+			m_response.makePostResponse();
+		}
 	}
 	if(m_request.getMethod() == "DELETE")
 	{
@@ -138,4 +145,10 @@ void Client::makeResponse()
 		return ;
 	}
 	
+}
+
+void Client::initRequestandResponse()
+{
+	m_request.initRequest();
+	m_response.initResponse();
 }
