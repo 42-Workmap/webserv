@@ -292,9 +292,12 @@ void Response::makeErrorResponse(int errorcode)
     addStatusLine(errorcode);
     addDate();
     addContentLanguage();
+    addServer();
     addContentType(".html");
     // if (errorcode == 401)
     //     addWWWAuthenticate();
+    if (errorcode == 405)
+        addAllowMethod();
     if (m_location->getErrorPages().count(errorcode) == 0)  // default 에러 페이지 없으면
         return(addErrorBody(errorcode));
 
@@ -356,3 +359,4 @@ void Response::initResponse()
     m_fd_read = -1;
     m_fd_write = -1;
 }
+

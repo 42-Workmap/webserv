@@ -97,11 +97,23 @@ void Response::addDefaultErrorBody(std::string &body, int errorcode)
 
 void Response::addServer(void)
 {
-	m_message += "Server: ft_nginx\r\n";
+	std::string server_name = m_client->getServer()->getServerName();
+	m_message += "Server: " + server_name + "\r\n";
 }
 
 void Response::addLocation(std::string &url)
 {
 	m_message += "Location: " + url + "\r\n";
 
+}
+
+void Response::addAllowMethod()
+{
+	std::string method = "";
+	for (std::vector<std::string>::iterator it = m_location->getAllowMethods().begin(); it != m_location->getAllowMethods().end(); it++)
+	{
+		method += *it;
+		method += ' ';
+	}
+	m_message += "Allow: " + method + "\r\n";
 }
