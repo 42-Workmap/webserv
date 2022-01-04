@@ -205,7 +205,6 @@ void Response::makeGetResponse()
 
 void Response::makePostResponse(void)
 {
-
     if (isDirectory(m_resource_path))
     {
         makeErrorResponse(400);

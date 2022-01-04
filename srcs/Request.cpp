@@ -203,10 +203,10 @@ bool Request::makeHeader(void)
         this->setOrigin("");
 
     //test
-    for (std::map<std::string, std::string>::iterator it = m_headersMap.begin(); it != m_headersMap.end(); it++)
-    {
-        std::cout << it->first <<" "<< it->second << std::endl;
-    }
+    // for (std::map<std::string, std::string>::iterator it = m_headersMap.begin(); it != m_headersMap.end(); it++)
+    // {
+    //     std::cout << it->first <<" "<< it->second << std::endl;
+    // }
     return true;
 }
 bool Request::makeBody(void)
@@ -315,7 +315,6 @@ bool Request::checkValidRequest(std::string fin)
 
 bool	Request::isValidAuthHeader(Location &loc)
 {
-    std::cout<< "isValidAuthHeader" << "\n";
 	if (loc.getAuthKey() != "")
 	{
 		char result[200];
@@ -339,7 +338,6 @@ bool	Request::isValidAuthHeader(Location &loc)
 
 bool	Request::isValidMethod(Location &loc)
 {
-    std::cout<< "isValidMethod" << "\n";
 	bool isAllowCheckOkay = false;
 	for (std::vector<std::string>::iterator iter = loc.getAllowMethods().begin(); iter != loc.getAllowMethods().end(); iter++)
 	{
@@ -356,7 +354,6 @@ bool	Request::isValidMethod(Location &loc)
 
 bool	Request::isValidRequestMaxBodySize(Location &loc)
 {
-    std::cout << "isValidRequestMaxBodySize" << "\n";
 	if (this->m_body.size() > (size_t)(loc.getMaxBodySize()))
 		return (false);
 	return (true);

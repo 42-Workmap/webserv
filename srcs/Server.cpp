@@ -128,7 +128,6 @@ std::ostream &operator<<(std::ostream &o, Server &server)
 
 Location	&Server::getPerfectLocation(std::string &uri)
 {
-	std::cout << "getPerfectLocation" << std::endl;
 	Location *ret = &(this->m_locationMap["/"]);
 	std::string key = "";
 	for (std::string::const_iterator iter = uri.begin(); iter != uri.end(); iter++)

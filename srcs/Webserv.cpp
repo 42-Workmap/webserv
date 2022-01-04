@@ -184,6 +184,7 @@ void Webserv::testServer(void)
 					Client* clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
 					if (clnt->getCStatus() == MAKE_RESPONSE_DONE)
 					{
+						std::cout << "MAKE_RESPONSE_DONE and try to write to client" << std::endl;
 						size_t n;
 
 						Response &rsp = clnt->getResponse();
@@ -196,10 +197,12 @@ void Webserv::testServer(void)
 						}
 						else
 						{
+							std::cout << "disconnect() : " << rsp.getDisconnect() << std::endl;
 							if (rsp.getDisconnect())
 								deleteFdPool(clnt);
 							else
 							{
+								std::cout << "change CStatus to REQUEST_RECEIVING" << std::endl;
 								clnt->setCStatus(REQUEST_RECEIVING);
 
 								clnt->initRequestandResponse();
