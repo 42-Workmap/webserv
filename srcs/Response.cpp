@@ -294,8 +294,8 @@ void Response::makeErrorResponse(int errorcode)
     addContentLanguage();
     addServer();
     addContentType(".html");
-    // if (errorcode == 401)
-    //     addWWWAuthenticate();
+    if (errorcode == 401)
+        addWWWAuthenticate();
     if (errorcode == 405)
         addAllowMethod();
     if (m_location->getErrorPages().count(errorcode) == 0)  // default 에러 페이지 없으면

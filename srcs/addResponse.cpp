@@ -117,3 +117,11 @@ void Response::addAllowMethod()
 	}
 	m_message += "Allow: " + method + "\r\n";
 }
+
+void Response::addWWWAuthenticate()
+{
+	// this->m_disconnect = true;
+	m_message += "WWW-Authenticate: Basic realm=\"ID:PASS\"";
+	m_message += "\r\n";
+}
+

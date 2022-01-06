@@ -91,6 +91,7 @@ class Response
 		void addDefaultErrorBody(std::string& message, int errorcode);  // 실제 errorcode body 만드는 함수
 		void addServer();
 		void addLocation(std::string &url);
+		void addWWWAuthenticate();
 
 		bool isDirectory(std::string path);
 		bool isExist(std::string path);
