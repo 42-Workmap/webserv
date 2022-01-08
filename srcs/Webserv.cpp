@@ -156,24 +156,40 @@ void Webserv::testServer(void)
 				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_RESOURCE)
 				{
 					Resource *rsc = dynamic_cast<Resource *>(m_fd_pool[curr_event->ident]);
-					if (rsc->getClient()->getCStatus() == MAKE_RESPONSE)
+					e_rsc_status ret = rsc->isReady();
+					if (ret == READY)
 					{
-						char buff[BUFSIZE];
-						unsigned long n = 0;
-						memset(buff, 0, BUFSIZE);
-						if ((n = read(curr_event->ident, buff, BUFSIZE-1)) < 0)
+						if (rsc->getClient()->getCStatus() == MAKE_RESPONSE)
 						{
-							error_handling("read() error in Resources");
-						}
-						buff[n] = '\0';
-						rsc->getRawData() += buff;
-						if (n < BUFSIZE-1)
-						{
-							rsc->getClient()->setCStatus(MAKE_RESPONSE_DONE);
-							deleteFdPool(m_fd_pool[curr_event->ident]);
-
+							std::cout << "READ_RESOURCE" << std::endl;
+							char buff[BUFSIZE];
+							unsigned long n = 0;
+							memset(buff, 0, BUFSIZE);
+							if ((n = read(curr_event->ident, buff, BUFSIZE-1)) < 0)
+							{
+								error_handling("read() error in Resources");
+							}
+							buff[n] = '\0';
+							rsc->getRawData() += buff;
+							if (n < BUFSIZE-1)
+							{
+								std::cout << "change CStatus to FILE_READ_DONE" << std::endl;
+								rsc->getClient()->setCStatus(FILE_READ_DONE);
+								deleteFdPool(m_fd_pool[curr_event->ident]);
+								rsc->getClient()->makeResponse();
+							}
 						}
 					}
+					else if (ret == NOT_YET)
+					{
+						(void)ret;
+					}
+					else
+					{
+						std::cout << "read Resource and make 500 response " << std::endl;
+						rsc->getClient()->getResponse().makeErrorResponse(500);
+						deleteFdPool(rsc);
+					}					
 				}
 			}
 			else if (curr_event->filter == EVFILT_WRITE)
@@ -217,6 +233,7 @@ void Webserv::testServer(void)
 					Resource* res = dynamic_cast<Resource *>(m_fd_pool[curr_event->ident]);
 					if (res->getClient()->getCStatus() == FILE_WRITING)
 					{
+						std::cout << "writeResource" << std::endl;
 						size_t n = 0;
 						n = write(curr_event->ident, res->getRawData().c_str(), (res->getRawData().length()));
 						if (n < 0)

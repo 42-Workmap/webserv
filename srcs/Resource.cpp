@@ -122,3 +122,32 @@ void Resource::setIsSeeked(bool seeked)
 {
     m_is_seeked = seeked;
 }
+
+e_rsc_status Resource::isReady(void)
+{
+    int status;
+
+    if (m_pid == -1)
+        return (READY);
+    else 
+    {
+        std::cout << "isReady()" << std::endl; // 절대 여기로 들어오지 않는다... 
+        if (waitpid(m_pid, &status, WNOHANG) == 0)
+            return (NOT_YET);
+        else
+        {
+            if (WIFEXITED(status) == 0)
+                return (CGI_CRASH);
+            else
+            {
+                if (m_is_seeked == false)
+                {
+                    lseek(m_fd, 0, SEEK_SET);
+                    m_is_seeked = true;
+                }
+                return (READY);
+            }
+        }
+    }
+    
+}

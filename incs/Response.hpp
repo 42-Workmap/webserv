@@ -33,7 +33,7 @@ class Response
 		std::string m_resource_path;
 		Location *m_location;
 
-		std::string m_cgi_extention;
+		std::string m_cgi_extension;
 		size_t m_write_idx;
 		std::list<Resource *> m_resourceList;
 
@@ -53,7 +53,7 @@ class Response
 		std::string& getMessage();
 		std::string getResourcePath();
 		Location* getLocation();
-		std::string getCgiExtention();
+		std::string getCgiExtension();
 		size_t getWriteIdx();
 		int getFdRead();
 		int getFdWrite();
@@ -72,13 +72,15 @@ class Response
 		void setFdWrite(int fd);
 		void setResource(int res_fd, e_resource_type type, e_nextcall ctype, int errornum = -1);
 
-		void makeResponse(void);
+		void makeCgiResponse(void);
 		void makeGetResponse(void);
 		void makePostResponse(void);
 		void makeRedirection(void);
 		void makeDeleteResponse(void);
 		void makeErrorResponse(int err); // 헤더 넣고 바디에 addErrorBody(errorcode) or setResource
 		void makeAutoIndexPage(void);
+
+		char **makeCgiEnv(void);
 
 		void addStatusLine(int err);
 		void addDate();

@@ -117,9 +117,8 @@ bool Client::parseRequest()
 
 void Client::makeResponse()
 {
-	// Response& response = getResponse();
-//     if(m_cgi_extention != "")
-//         return (makeCgi());
+    if(m_response.getCgiExtension() != "")
+        return (m_response.makeCgiResponse());
     if (m_response.getReturn()) 
         return (m_response.makeRedirection());
     

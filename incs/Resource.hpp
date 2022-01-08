@@ -2,6 +2,8 @@
 # define RESOURCE_HPP
 
 #include <string>
+#include <unistd.h>
+#include <iostream>
 #include "FdBase.hpp"
 
 class Client;
@@ -17,6 +19,13 @@ typedef enum			t_nextcall
 	MAKING_ERROR_RESPONSE,
 	MAKING_RESPONSE
 }						e_nextcall;
+
+typedef enum    t_rsc_status
+{
+    READY, 
+    NOT_YET, 
+    CGI_CRASH
+}               e_rsc_status;
 
 class Resource : public FdBase
 {
@@ -59,6 +68,8 @@ class Resource : public FdBase
         void setWriteIndex(size_t idx);
         void setPid(int pid);
         void setIsSeeked(bool seeked);
+
+        e_rsc_status isReady(void);
 };
 
 
