@@ -126,8 +126,7 @@ void Webserv::testServer(void)
 				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_CLIENT)
 				{
 					Client *clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
-					if (clnt->getCStatus() == REQUEST_RECEIVING)
-					{
+					// if (clnt->getCStatus() == REQUEST_RECEIVING)
 						char buf[BUFSIZE];
 						int n = 1;
 						memset(buf, 0, BUFSIZE);
@@ -151,7 +150,6 @@ void Webserv::testServer(void)
 								clnt->makeResponse();
 							}
 						}
-					}
 				}
 				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_RESOURCE)
 				{
@@ -182,7 +180,7 @@ void Webserv::testServer(void)
 					}
 					else if (ret == NOT_YET)
 					{
-						(void)ret;
+						std::cout << rsc->getFd() << " : NOT_YET" <<std::endl;
 					}
 					else
 					{
@@ -199,7 +197,7 @@ void Webserv::testServer(void)
 					Client* clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
 					if (clnt->getCStatus() == MAKE_RESPONSE_DONE)
 					{
-						std::cout << "MAKE_RESPONSE_DONE and try to write to client" << std::endl;
+						std::cout << clnt->getFd() << " : WriteClient" << std::endl;
 						size_t n;
 
 						Response &rsp = clnt->getResponse();
@@ -231,22 +229,20 @@ void Webserv::testServer(void)
 				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_RESOURCE)
 				{
 					Resource* res = dynamic_cast<Resource *>(m_fd_pool[curr_event->ident]);
-					if (res->getClient()->getCStatus() == FILE_WRITING)
+					std::cout << res->getFd() << " : WriteResource" << std::endl;
+					size_t n = 0;
+					n = write(curr_event->ident, res->getRawData().c_str(), (res->getRawData().length()));
+					if (n < 0)
+						error_handling("resource write error");
+					if (n < res->getRawData().length())
 					{
-						std::cout << "writeResource" << std::endl;
-						size_t n = 0;
-						n = write(curr_event->ident, res->getRawData().c_str(), (res->getRawData().length()));
-						if (n < 0)
-							error_handling("resource write error");
-						if (n < res->getRawData().length())
-						{
-							res->getRawData().erase(0,n);
-						}
-						else
-						{
-							res->getClient()->setCStatus(FILE_WRITE_DONE);
-							deleteFdPool(res);
-						}
+						res->getRawData().erase(0,n);
+					}
+					else
+					{
+						res->getClient()->setCStatus(FILE_WRITE_DONE);
+						res->getClient()->makeResponse();
+						deleteFdPool(res);
 					}
 				}
 			}
@@ -262,6 +258,10 @@ std::vector<struct kevent>& Webserv::getChangeList()
 
 void Webserv::addFdPool(FdBase* res)
 {
+	if (m_fd_pool[res->getFd()] != NULL)
+	{
+		std::cout << "duplicated fd" << std::endl;
+	}
 	m_fd_pool[res->getFd()] = res;
 }
 

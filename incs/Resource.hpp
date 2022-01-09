@@ -70,6 +70,7 @@ class Resource : public FdBase
         void setIsSeeked(bool seeked);
 
         e_rsc_status isReady(void);
+        void doNext(void);
 };
 
 

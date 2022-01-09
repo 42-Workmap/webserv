@@ -196,15 +196,17 @@ char **Response::makeCgiEnv(void)
         cgi_map["REQUEST_URI"] = path_info; // query까지
     else
         cgi_map["REQUEST_URI"] = m_client->getRequest().getReqLocation();
-    cgi_map["SCRIPT_NAME"] = m_location->getCgi()[m_cgi_extension];
+    // cgi_map["SCRIPT_EXEC"] = m_location->getCgi()[m_cgi_extension];
     cgi_map["SERVER_NAME"] = m_client->getServer()->getServerName();
     cgi_map["SERVER_PORT"] = m_client->getServer()->getPort();
     cgi_map["SERVER_PROTOCOL"] = "HTTP/1.1";
     cgi_map["SERVER_SOFTWARE"] = "nginx";
-    // cgi_map["REDIRECT_STATUS"]
     cgi_map["SCRIPT_FILENAME"] = path_translated;
 
-    for (std::map<std::string, std::string>::iterator it = cgi_map.begin(); it != cgi_map.end(); it++)
+    cgi_map["REDIRECT_STATUS"]="200";
+    cgi_map["SCRIPT_NAME"] = m_location->getCgi()[m_cgi_extension];
+
+    for (std::map<std::string, std::string>::iterator it = headersMap.begin(); it != headersMap.end(); it++)
         cgi_map["HTTP_" + it->first] = it->second;
     if (!(ret = (char **)malloc(sizeof(char *) * (cgi_map.size() + 1))))
         return (NULL);
@@ -212,6 +214,7 @@ char **Response::makeCgiEnv(void)
     for (std::map<std::string, std::string>::iterator it = cgi_map.begin(); it != cgi_map.end(); it++)
     {
         ret[i] = strdup((it->first + "=" + it->second).c_str());
+        std::cout << ret[i] << std::endl;
         i++;
     }
     ret[i] = NULL;
@@ -222,6 +225,8 @@ void Response::makeCgiResponse(void)
 {
     if (m_client->getCStatus() == MAKE_RESPONSE)
     {
+        char **cgi_env = makeCgiEnv();
+
         std::cout << "got into MakeCGI()" << std::endl;
         int fds[2];
 
@@ -251,8 +256,6 @@ void Response::makeCgiResponse(void)
             args[0] = strdup(m_location->getCgi()[m_cgi_extension].c_str());
             args[1] = strdup(uriuntilparam.c_str());
             args[2] = 0;
-
-            char **cgi_env = makeCgiEnv();
 
             int ret;
             ret = execve(args[0], args, cgi_env);
