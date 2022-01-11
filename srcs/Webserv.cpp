@@ -157,8 +157,8 @@ void Webserv::testServer(void)
 					e_rsc_status ret = rsc->isReady();
 					if (ret == READY)
 					{
-						if (rsc->getClient()->getCStatus() == MAKE_RESPONSE)
-						{
+						// if (rsc->getClient()->getCStatus() == MAKE_RESPONSE)
+						// {
 							std::cout << "READ_RESOURCE" << std::endl;
 							char buff[BUFSIZE];
 							unsigned long n = 0;
@@ -173,10 +173,10 @@ void Webserv::testServer(void)
 							{
 								std::cout << "change CStatus to FILE_READ_DONE" << std::endl;
 								rsc->getClient()->setCStatus(FILE_READ_DONE);
-								deleteFdPool(m_fd_pool[curr_event->ident]);
 								rsc->getClient()->makeResponse();
+								deleteFdPool(m_fd_pool[curr_event->ident]);
 							}
-						}
+						// }
 					}
 					else if (ret == NOT_YET)
 					{
