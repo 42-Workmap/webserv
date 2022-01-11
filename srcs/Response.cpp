@@ -326,6 +326,26 @@ void Response::makeErrorResponse(int errorcode)
 void Response::makeAutoIndexPage(void)
 {
     m_message.clear();
+
+    addStatusLine(200);
+    addContentLanguage();
+    addContentType(".html");
+    addDate();
+
+    std::string body = "";
+    body += "<!DOCTYPE html>\n";
+	body += "<html>\n";
+	body += "<head>\n";
+	body += "</head>\n";
+	body += "<body>";
+	body += "autoindex page";
+	body += "</body>\n";
+	body += "</html>\n";
+
+    addContentLength(body.size());
+    addEmptyLine();
+    m_message += body;
+    m_client->setCStatus(MAKE_RESPONSE_DONE);
 }
 
 void Response::setResource(int res_fd, e_resource_type type, e_nextcall ctype, int errornum)
