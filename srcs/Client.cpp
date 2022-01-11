@@ -133,9 +133,9 @@ void Client::makeResponse()
 	if (m_request.getMethod() == "POST")
 	{
 		if (getCStatus() == MAKE_RESPONSE)
-		{
 			m_response.makePostResponse();
-		}
+		else if (getCStatus() == FILE_WRITE_DONE)
+			this->setCStatus(MAKE_RESPONSE_DONE);
 	}
 	if(m_request.getMethod() == "DELETE")
 	{

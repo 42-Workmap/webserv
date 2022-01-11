@@ -45,7 +45,7 @@ char **Response::makeCgiEnv(void)
         cgi_map["REQUEST_URI"] = path_info; // query까지
     else
         cgi_map["REQUEST_URI"] = m_client->getRequest().getReqLocation();
-    // cgi_map["SCRIPT_EXEC"] = m_location->getCgi()[m_cgi_extension];
+    cgi_map["SCRIPT_EXEC"] = m_location->getCgi()[m_cgi_extension];
     cgi_map["SERVER_NAME"] = m_client->getServer()->getServerName();
     cgi_map["SERVER_PORT"] = m_client->getServer()->getPort();
     cgi_map["SERVER_PROTOCOL"] = "HTTP/1.1";
@@ -82,18 +82,7 @@ void Response::makeCgiResponse(void)
             return (makeErrorResponse(500));
         if ((pipe(write_fds)) == -1)
             return (makeErrorResponse(500));
-        // m_fd_read = fds[0];
-        // m_fd_write = fds[1];
 
-        // fcntl(fds[1], F_SETFL, O_NONBLOCK);
-        // setResource(fds[1], WRITE_RESOURCE, MAKING_RESPONSE, -1);
-
-        // mkdir("./temp", 0777);
-        // std::string temp_file_name = "./temp/tempfile_" + std::to_string(fds[0]);
-        // int fd_temp = open(temp_file_name.c_str(), O_CREAT | O_TRUNC | O_RDWR, 0666);
-
-        // if (fd_temp == -1)
-        //     return (makeErrorResponse(500));
         int pid = fork();
         if (pid == 0) // 자식이면  
         {  
@@ -103,10 +92,6 @@ void Response::makeCgiResponse(void)
             args[1] = strdup(uriuntilparam.c_str());
             args[2] = 0;
             char **cgi_env = makeCgiEnv();
-
-            // close(m_fd_write); // stdout X
-            // dup2(m_fd_read, 0); //stdin -> fd_read 
-            // dup2(fd_temp, 1); // stdout -> tempfile 에 적겠다 
 
             dup2(write_fds[0], STDIN_FILENO);
             dup2(read_fds[1], STDOUT_FILENO);
@@ -129,37 +114,29 @@ void Response::makeCgiResponse(void)
             m_fd_read = read_fds[0];
             m_fd_write = write_fds[1];
 
-            // if (m_client->getRequest().getMethod() == "POST")
-            // {
-
-            //     fcntl(write_fds[1], F_SETFL, O_NONBLOCK);
-            //     setResource(write_fds[1], WRITE_RESOURCE, MAKING_RESPONSE, -1);
-            // }
-            // else
-                close(write_fds[1]);
+            fcntl(write_fds[1], F_SETFL, O_NONBLOCK);
+            setResource(write_fds[1], WRITE_RESOURCE, MAKING_RESPONSE, -1);
 
             std::cout << "pid != 0 cgi()" << std::endl;
             Resource *res = new Resource(m_fd_read, m_message, m_client, READ_RESOURCE, MAKING_RESPONSE, -1);
             res->setPid(pid);
-            // res->setUnlinkPath(temp_file_name);
             m_resourceList.push_back(res);
             Config::getConfig()->getWebserv()->addFdPool(res);
             Config::getConfig()->getWebserv()->change_events(Config::getConfig()->getWebserv()->getChangeList(), \
                                     m_fd_read, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
+            m_client->setCStatus(FILE_WRITING);
 
         }
     }
     else if (m_client->getCStatus() == FILE_READ_DONE)
     {
         close(m_fd_read);
-        std::cout << "CGI" << m_message << std::endl; // 나중을 위한 print
         std::string read_result = m_message.substr();
 
         m_message.clear(); 
         size_t status_idx1 = read_result.find("Status: ") + 8;
         size_t status_idx2 = read_result.find("\r\n", status_idx1);
         m_message += "HTTP/1.1 " + read_result.substr(status_idx1, status_idx2 - status_idx1) + "\r\n";
-        // newheader HTTP/1.1 200 OK 
         addDate();
         addContentLanguage();
         size_t body_size = read_result.substr(read_result.find("\r\n\r\n") + 4).size();
