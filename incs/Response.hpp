@@ -11,6 +11,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <time.h>
+#include <dirent.h>
 
 // #include "Client.hpp"
 #include "Config.hpp"
@@ -79,6 +80,7 @@ class Response
 		void makeDeleteResponse(void);
 		void makeErrorResponse(int err); // 헤더 넣고 바디에 addErrorBody(errorcode) or setResource
 		void makeAutoIndexPage(void);
+		void makeFileList(std::string &body);
 
 		char **makeCgiEnv(void);
 
