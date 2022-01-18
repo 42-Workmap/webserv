@@ -114,6 +114,12 @@ void Webserv::testServer(void)
 						error_handling("accept() error");
 					}
 					fcntl(clnt_sock, F_SETFL, O_NONBLOCK);
+					struct timeval tv;
+					tv.tv_sec = 60;
+					if (setsockopt(clnt_sock, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
+						return (error_handling("recv time out set fail"));
+					if (setsockopt(clnt_sock, SOL_SOCKET, SO_SNDTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
+						return (error_handling("send time out set fail"));
 
 					change_events(m_change_list, clnt_sock, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
 					change_events(m_change_list, clnt_sock, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL);
@@ -223,6 +229,7 @@ void Webserv::testServer(void)
 					Resource* res = dynamic_cast<Resource *>(m_fd_pool[curr_event->ident]);
 					std::cout << res->getFd() << " : WriteResource" << std::endl;
 					size_t n = 0;
+					
 					n = write(curr_event->ident, res->getRawData().c_str(), (res->getRawData().length()));
 					if (n < 0)
 						error_handling("resource write error");

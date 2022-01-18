@@ -205,6 +205,8 @@ void Response::makeGetResponse()
 
 void Response::makePostResponse(void)
 {
+	if (m_client->getRequest().getBody().size() == 0)
+		return (makeErrorResponse(411));
 	if (isDirectory(m_resource_path))
 	{
 		makeErrorResponse(400);
