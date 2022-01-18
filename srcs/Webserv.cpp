@@ -276,7 +276,7 @@ void Webserv::deleteFdPool(FdBase* instance)
 					deleteFdPool(dynamic_cast<FdBase*>(*it));
 			}
 		}
-		std::cout << instance->getFd() << " : client closed" << std::endl;
+		std::cout << "Client >> close fd : " <<instance->getFd() << std::endl;
 	}
 	else if (instance->getFdType() == FD_RESOURCE)
 	{
@@ -291,9 +291,20 @@ void Webserv::deleteFdPool(FdBase* instance)
 				rspList.erase(it);
 			}
 		}
-		std::cout << instance->getFd() << " : resource closed" << std::endl;
+		std::cout << "Resource >> close fd : " <<instance->getFd() << std::endl;
 	}
+	if (instance->getFdType() == FD_SERVER)
+		std::cout << "Server >> close fd : " << instance->getFd() << std::endl;
 	m_fd_pool[instance->getFd()] = NULL;
 	if (instance->getFdType() != FD_SERVER)
 		delete instance;
+}
+
+void Webserv::signalExit()
+{
+	for (std::vector<FdBase*>::iterator it = m_fd_pool.begin(); it != m_fd_pool.end(); it++)
+	{
+		if (*it != NULL)
+			deleteFdPool(*it);
+	}
 }

@@ -352,8 +352,10 @@ void Response::makeAutoIndexPage(void)
 
 void Response::makeFileList(std::string &body)
 {
-	std::string http_host_port = "http://" + m_client->getRequest().getHeadersMap()["Host"] + "\\";  // <host>:<port>
-	DIR *dir = NULL;
+	std::string http_host_port = "http://" + m_client->getRequest().getHeadersMap()["Host"] + m_client->getRequest().getReqLocation() ;  // <host>:<port>
+    if (http_host_port[http_host_port.length()-1] != '/')
+        http_host_port += "/";
+    DIR *dir = NULL;
 	struct dirent *directory = NULL;
 
 	if ((dir = opendir(m_resource_path.c_str())) == NULL)
