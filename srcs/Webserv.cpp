@@ -62,6 +62,8 @@ void Webserv::startServer()
 		it->second.setFd(serv_sock);
 		if (serv_sock == -1)
 			error_handling("socket() error");
+		int opt = 1;
+		setsockopt(serv_sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 		memset(&serv_addr, 0, sizeof(serv_addr));
 		serv_addr.sin_family = AF_INET;
 		serv_addr.sin_addr.s_addr = inet_addr(it->second.getIp().c_str());
@@ -74,7 +76,6 @@ void Webserv::startServer()
 			error_handling("listen() error");
 		std::cout << it->second.getIp() << ":" << it->second.getPort() << " server on"<< "\n";
 		fcntl(serv_sock, F_SETFL, O_NONBLOCK);
-
 		change_events(m_change_list, serv_sock, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
 		m_fd_pool[serv_sock] = &(it->second);
 	}
