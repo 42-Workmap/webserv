@@ -63,7 +63,6 @@ char **Response::makeCgiEnv(void)
     for (std::map<std::string, std::string>::iterator it = cgi_map.begin(); it != cgi_map.end(); it++)
     {
         ret[i] = strdup((it->first + "=" + it->second).c_str());
-        std::cout << ret[i] << std::endl;
         i++;
     }
     ret[i] = NULL;
@@ -74,7 +73,6 @@ void Response::makeCgiResponse(void)
 {
     if (m_client->getCStatus() == MAKE_RESPONSE)
     {
-        std::cout << "got into MakeCGI()" << std::endl;
         int read_fds[2];
         int write_fds[2];
 
@@ -117,7 +115,6 @@ void Response::makeCgiResponse(void)
             fcntl(write_fds[1], F_SETFL, O_NONBLOCK);
             setResource(write_fds[1], WRITE_RESOURCE, MAKING_RESPONSE, -1);
 
-            std::cout << "pid != 0 cgi()" << std::endl;
             Resource *res = new Resource(m_fd_read, m_message, m_client, READ_RESOURCE, MAKING_RESPONSE, -1);
             res->setPid(pid);
             m_resourceList.push_back(res);

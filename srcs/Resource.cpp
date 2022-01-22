@@ -131,7 +131,6 @@ e_rsc_status Resource::isReady(void)
         return (READY);
     else 
     {
-        std::cout << "isReady()" << std::endl; // 절대 여기로 들어오지 않는다... 
         if (waitpid(m_pid, &status, WNOHANG) == 0)
         {
             return (NOT_YET);
@@ -147,7 +146,6 @@ e_rsc_status Resource::isReady(void)
                     lseek(m_fd, 0, SEEK_SET);
                     m_is_seeked = true;
                 }
-                std::cout << "READY" << std::endl;
                 return (READY);
             }
         }

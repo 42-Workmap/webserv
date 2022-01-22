@@ -259,7 +259,6 @@ void Response::makeRedirection(void)
 
 void Response::makeDeleteResponse(void)
 {
-	std::cout << "Delete() func here" << std::endl;
 	m_message.clear();
 	if (!isExist(m_resource_path))
 		makeErrorResponse(404);
