@@ -117,10 +117,10 @@ void Webserv::testServer(void)
 					fcntl(clnt_sock, F_SETFL, O_NONBLOCK);
 					struct timeval tv;
 					tv.tv_sec = 60;
-					if (setsockopt(clnt_sock, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
-						return (error_handling("recv time out set fail"));
-					if (setsockopt(clnt_sock, SOL_SOCKET, SO_SNDTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
-						return (error_handling("send time out set fail"));
+					// if (setsockopt(clnt_sock, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
+					// 	return (error_handling("recv time out set fail"));
+					// if (setsockopt(clnt_sock, SOL_SOCKET, SO_SNDTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
+					// 	return (error_handling("send time out set fail"));
 
 					change_events(m_change_list, clnt_sock, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
 					change_events(m_change_list, clnt_sock, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL);
@@ -147,11 +147,9 @@ void Webserv::testServer(void)
 					else if (n > 0)
 					{
 						buf[n] = '\0';
-						std::cout << buf << "\n";
 						clnt->appendOrigin(buf);
 						if(clnt->getCStatus() == REQUEST_RECEIVING && clnt->parseRequest())
 						{
-							std::cout << "ParseRequest end\n" << std::endl;
 							clnt->setCStatus(MAKE_RESPONSE);
 							clnt->makeResponse();
 						}
@@ -163,7 +161,6 @@ void Webserv::testServer(void)
 					e_rsc_status ret = rsc->isReady();
 					if (ret == READY)
 					{
-						std::cout << "READ_RESOURCE" << std::endl;
 						char buff[BUFSIZE];
 						unsigned long n = 0;
 						memset(buff, 0, BUFSIZE);
@@ -175,19 +172,13 @@ void Webserv::testServer(void)
 						rsc->getRawData() += buff;
 						if (n < BUFSIZE-1)
 						{
-							std::cout << "change CStatus to FILE_READ_DONE" << std::endl;
 							rsc->getClient()->setCStatus(FILE_READ_DONE);
 							rsc->getClient()->makeResponse();
 							deleteFdPool(m_fd_pool[curr_event->ident]);
 						}
 					}
-					else if (ret == NOT_YET)
+					else if (ret == CGI_CRASH)
 					{
-						std::cout << rsc->getFd() << " : NOT_YET" <<std::endl;
-					}
-					else
-					{
-						std::cout << "read Resource and make 500 response " << std::endl;
 						rsc->getClient()->getResponse().makeErrorResponse(500);
 						deleteFdPool(rsc);
 					}					
@@ -200,7 +191,6 @@ void Webserv::testServer(void)
 					Client* clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
 					if (clnt->getCStatus() == MAKE_RESPONSE_DONE)
 					{
-						std::cout << clnt->getFd() << " : WriteClient" << std::endl;
 						size_t n;
 
 						Response &rsp = clnt->getResponse();
@@ -217,7 +207,6 @@ void Webserv::testServer(void)
 								deleteFdPool(clnt);
 							else
 							{
-								std::cout << "change CStatus to REQUEST_RECEIVING" << std::endl;
 								clnt->setCStatus(REQUEST_RECEIVING);
 
 								clnt->initRequestandResponse();
@@ -228,7 +217,6 @@ void Webserv::testServer(void)
 				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_RESOURCE)
 				{
 					Resource* res = dynamic_cast<Resource *>(m_fd_pool[curr_event->ident]);
-					std::cout << res->getFd() << " : WriteResource" << std::endl;
 					size_t n = 0;
 					
 					n = write(curr_event->ident, res->getRawData().c_str(), (res->getRawData().length()));
@@ -247,6 +235,7 @@ void Webserv::testServer(void)
 				}
 			}
 		}
+		usleep(5);
 	}
 }
 

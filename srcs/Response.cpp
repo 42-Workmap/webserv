@@ -198,9 +198,7 @@ void Response::makeGetResponse()
 
 	addContentLength((int)sb.st_size);
 	addEmptyLine();
-	std::cout << m_message << std::endl; // test header
 	setResource(fd, READ_RESOURCE, MAKING_RESPONSE);
-	// setReadResource(fd, READ_FD, MAKING_RESPONSE);
 }
 
 void Response::makePostResponse(void)
