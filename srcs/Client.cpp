@@ -53,7 +53,7 @@ e_c_status &Client::getCStatus(void)
 	return (this->m_c_status);
 }
 
-struct timeval &Client::getLastTime(void)
+unsigned long &Client::getLastTime(void)
 {
 	return (this->m_last_time);
 }
@@ -63,7 +63,7 @@ Server* Client::getServer(void)
 	return (this->m_server);
 }
 
-void Client::setLastTime(struct timeval last_time)
+void Client::setLastTime(unsigned long last_time)
 {
 	this->m_last_time = last_time;
 }

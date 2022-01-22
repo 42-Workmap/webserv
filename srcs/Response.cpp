@@ -291,7 +291,6 @@ void Response::makeDeleteResponse(void)
 void Response::makeErrorResponse(int errorcode)
 {
 	m_message.clear();
-	std::cout << "error" << errorcode << std::endl;
 	addStatusLine(errorcode);
 	addDate();
 	addContentLanguage();
@@ -301,6 +300,8 @@ void Response::makeErrorResponse(int errorcode)
 		addWWWAuthenticate();
 	if (errorcode == 405)
 		addAllowMethod();
+	// if (errorcode == 408)
+	// 	m_message += "Connection: close\r\n";
 	if (m_location->getErrorPages().count(errorcode) == 0)  // default 에러 페이지 없으면
 		return(addErrorBody(errorcode));
 

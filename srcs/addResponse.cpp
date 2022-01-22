@@ -75,7 +75,7 @@ void Response::addEmptyLine(void)
 
 void Response::addErrorBody(int error)
 {
-	std::string body;
+	std::string body = "";
 	body += "<!DOCTYPE html>\n";
 	body += "<html>\n";
 	body += "<head>\n";

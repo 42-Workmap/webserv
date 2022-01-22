@@ -36,6 +36,7 @@ class Webserv
 		struct kevent m_return_events[1024];
 		std::vector<struct kevent> m_change_list;
 		std::vector<FdBase *> m_fd_pool;
+		unsigned long m_timeout;
 
 	public:
 		Webserv();
@@ -52,6 +53,7 @@ class Webserv
 		void addFdPool(FdBase* res);
 		void deleteFdPool(FdBase *res);
 		void signalExit();
+		unsigned long call_time(void);
 };
 
 #endif

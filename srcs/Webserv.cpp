@@ -3,6 +3,7 @@
 Webserv::Webserv()
 {
 	this->m_fd_pool.resize(MAX_FD_SIZE, NULL);
+	this->m_timeout = 6000000;
 	std::cout << "Webserv constructor called" << std::endl;
 }
 
@@ -133,6 +134,7 @@ void Webserv::testServer(void)
 				else if (m_fd_pool[curr_event->ident]->getFdType() == FD_CLIENT)
 				{
 					Client *clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
+					clnt->setLastTime(call_time());
 					char buf[BUFSIZE];
 					int n = 1;
 					memset(buf, 0, BUFSIZE);
@@ -188,6 +190,12 @@ void Webserv::testServer(void)
 				if (m_fd_pool[curr_event->ident]->getFdType() == FD_CLIENT)
 				{
 					Client* clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
+					// std::cout << call_time() - clnt->getLastTime() << std::endl;
+					// if (call_time() - clnt->getLastTime() > m_timeout)
+					// {
+					// 	clnt->getResponse().makeErrorResponse(408);
+					// 	clnt->getResponse().setDisconnect(true);
+					// }
 					if (clnt->getCStatus() == MAKE_RESPONSE_DONE)
 					{
 						size_t n;
@@ -303,4 +311,12 @@ void Webserv::signalExit()
 		if (*it != NULL)
 			deleteFdPool(*it);
 	}
+}
+
+unsigned long Webserv::call_time(void)
+{
+	struct timeval tv;
+
+	gettimeofday(&tv, NULL);
+	return (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }

@@ -31,7 +31,7 @@ class Client : public FdBase
 		Request m_request;
 		Response m_response;
 		e_c_status m_c_status;
-		struct timeval m_last_time;
+		unsigned long m_last_time;
 
 		Server *m_server;
 
@@ -45,10 +45,10 @@ class Client : public FdBase
 		Request &getRequest(void);
 		Response &getResponse(void);
 		e_c_status &getCStatus(void);
-		struct timeval &getLastTime(void);
+		unsigned long &getLastTime(void);
 		Server* getServer(void);
 
-		void setLastTime(struct timeval last_time);
+		void setLastTime(unsigned long last_time);
 		void setCStatus(e_c_status c_status);
 
 		void appendOrigin(std::string newstr);
