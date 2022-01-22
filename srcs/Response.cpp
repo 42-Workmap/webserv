@@ -188,16 +188,16 @@ void Response::makeGetResponse()
 	// 문제가 없을 경우 헤더 만들기 시작
 	addStatusLine(200);
 	addDate();
-	addContentLanguage();
+	m_message += "Content-Language: ko-kr\r\n";
+
 	idx = m_resource_path.find_first_of('/');
 	idx = m_resource_path.find_first_of('.', idx);
 	if (idx == std::string::npos)
 		addContentType(".arc");
 	else
 		addContentType(m_resource_path.substr(idx));
-
-	addContentLength((int)sb.st_size);
-	addEmptyLine();
+	m_message += "Content-Length: " + std::to_string((int)sb.st_size) + "\r\n";
+	m_message += "\r\n";
 	setResource(fd, READ_RESOURCE, MAKING_RESPONSE);
 }
 

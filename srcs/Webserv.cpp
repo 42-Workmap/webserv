@@ -117,16 +117,15 @@ void Webserv::testServer(void)
 					fcntl(clnt_sock, F_SETFL, O_NONBLOCK);
 					struct timeval tv;
 					tv.tv_sec = 60;
-					// if (setsockopt(clnt_sock, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
-					// 	return (error_handling("recv time out set fail"));
-					// if (setsockopt(clnt_sock, SOL_SOCKET, SO_SNDTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
-					// 	return (error_handling("send time out set fail"));
+					if (setsockopt(clnt_sock, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
+						return (error_handling("recv time out set fail"));
+					if (setsockopt(clnt_sock, SOL_SOCKET, SO_SNDTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
+						return (error_handling("send time out set fail"));
 
 					change_events(m_change_list, clnt_sock, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
 					change_events(m_change_list, clnt_sock, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL);
 
 					Client *clnt = new Client((dynamic_cast<Server *>(m_fd_pool[serv_fd])), clnt_sock);
-					std::cout << "Accepted " << clnt_sock << std::endl;
 					m_fd_pool[clnt_sock] = clnt;
 
 				}
