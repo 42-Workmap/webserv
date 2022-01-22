@@ -8,6 +8,9 @@ Client::Client()
 	this->m_fd = -1;
 	this->m_request.setClient(this);
 	this->m_response.setClient(this);
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	this->m_last_time =  (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 
 Client::Client(Server *server, int c_fd)
@@ -18,6 +21,9 @@ Client::Client(Server *server, int c_fd)
 	this->m_fd = c_fd;
 	this->m_request.setClient(this);
 	this->m_response.setClient(this);
+	struct timeval tv;
+	gettimeofday(&tv, NULL);
+	this->m_last_time =  (tv.tv_sec * 1000 + tv.tv_usec / 1000);
 }
 Client::~Client()
 {

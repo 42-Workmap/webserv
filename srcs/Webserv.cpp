@@ -190,12 +190,11 @@ void Webserv::testServer(void)
 				if (m_fd_pool[curr_event->ident]->getFdType() == FD_CLIENT)
 				{
 					Client* clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
-					// std::cout << call_time() - clnt->getLastTime() << std::endl;
-					// if (call_time() - clnt->getLastTime() > m_timeout)
-					// {
-					// 	clnt->getResponse().makeErrorResponse(408);
-					// 	clnt->getResponse().setDisconnect(true);
-					// }
+					if (call_time() - clnt->getLastTime() > m_timeout)
+					{
+						clnt->getResponse().makeErrorResponse(408);
+						clnt->getResponse().setDisconnect(true);
+					}
 					if (clnt->getCStatus() == MAKE_RESPONSE_DONE)
 					{
 						size_t n;

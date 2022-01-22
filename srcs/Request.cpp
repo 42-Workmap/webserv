@@ -187,7 +187,6 @@ bool Request::makeHeader(void)
     ft_split(tempheader, "\r\n", tempVHeaders);
     for (std::vector<std::string>::iterator it = tempVHeaders.begin(); it != tempVHeaders.end(); it++)
     {
-        // Content-Length  :   120\r\n
         std::string line = *it;
         std::size_t idx = line.find(':');
         std::string key = line.substr(0, idx);
@@ -200,19 +199,12 @@ bool Request::makeHeader(void)
         this->setOrigin(this->m_origin.substr(found+4));
     else
         this->setOrigin("");
-
-    //test
-    // for (std::map<std::string, std::string>::iterator it = m_headersMap.begin(); it != m_headersMap.end(); it++)
-    // {
-    //     std::cout << it->first <<" "<< it->second << std::endl;
-    // }
     return true;
 }
 bool Request::makeBody(void)
 {
     if (m_request_status == CONTENT_BODY)
     {
-        std::cout << "ContentBody()" << std::endl;
         if (m_remain_body_value <= m_origin.length())
         {
             m_body.append(m_origin.substr(0, m_remain_body_value));
