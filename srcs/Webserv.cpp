@@ -117,6 +117,7 @@ void Webserv::testServer(void)
 					fcntl(clnt_sock, F_SETFL, O_NONBLOCK);
 					struct timeval tv;
 					tv.tv_sec = 60;
+					tv.tv_usec = 0;
 					if (setsockopt(clnt_sock, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
 						return (error_handling("recv time out set fail"));
 					if (setsockopt(clnt_sock, SOL_SOCKET, SO_SNDTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
@@ -140,7 +141,6 @@ void Webserv::testServer(void)
 
 					if (n == 0)
 					{
-						std::cout << "client read zero!!" << std::endl;
 						deleteFdPool(m_fd_pool[curr_event->ident]);
 					}
 					else if (n > 0)
@@ -272,7 +272,7 @@ void Webserv::deleteFdPool(FdBase* instance)
 					deleteFdPool(dynamic_cast<FdBase*>(*it));
 			}
 		}
-		std::cout << "Client >> close fd : " <<instance->getFd() << std::endl;
+		// std::cout << "Client >> close fd : " <<instance->getFd() << std::endl;
 	}
 	else if (instance->getFdType() == FD_RESOURCE)
 	{
@@ -287,10 +287,10 @@ void Webserv::deleteFdPool(FdBase* instance)
 				rspList.erase(it);
 			}
 		}
-		std::cout << "Resource >> close fd : " <<instance->getFd() << std::endl;
+		// std::cout << "Resource >> close fd : " <<instance->getFd() << std::endl;
 	}
-	if (instance->getFdType() == FD_SERVER)
-		std::cout << "Server >> close fd : " << instance->getFd() << std::endl;
+	// if (instance->getFdType() == FD_SERVER)
+		// std::cout << "Server >> close fd : " << instance->getFd() << std::endl;
 	m_fd_pool[instance->getFd()] = NULL;
 	if (instance->getFdType() != FD_SERVER)
 		delete instance;
