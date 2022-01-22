@@ -3,7 +3,7 @@
 Webserv::Webserv()
 {
 	this->m_fd_pool.resize(MAX_FD_SIZE, NULL);
-	this->m_timeout = 6000000;
+	this->m_timeout = 10000;
 	std::cout << "Webserv constructor called" << std::endl;
 }
 
@@ -190,13 +190,22 @@ void Webserv::testServer(void)
 				if (m_fd_pool[curr_event->ident]->getFdType() == FD_CLIENT)
 				{
 					Client* clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
+					std::cout << call_time() - clnt->getLastTime() << std::endl;
 					if (call_time() - clnt->getLastTime() > m_timeout)
 					{
-						clnt->getResponse().makeErrorResponse(408);
-						clnt->getResponse().setDisconnect(true);
+						if (clnt->getCStatus() == REQUEST_RECEIVING)
+						{
+							deleteFdPool(clnt);
+							break;
+						}
+						else
+						{
+							clnt->getResponse().makeErrorResponse(408);
+							clnt->getResponse().setDisconnect(true);
+						}
 					}
 					if (clnt->getCStatus() == MAKE_RESPONSE_DONE)
-					{
+					{ 
 						size_t n;
 
 						Response &rsp = clnt->getResponse();
@@ -288,10 +297,13 @@ void Webserv::deleteFdPool(FdBase* instance)
 		if (clnt)
 		{
 			std::list<Resource *> &rspList = clnt->getResponse().getResourceList();
-			std::list<Resource *>::iterator it = std::find(rspList.begin(), rspList.end(), res);
-			if (it != rspList.end())
+			if (!rspList.empty())
 			{
-				rspList.erase(it);
+				std::list<Resource *>::iterator it = std::find(rspList.begin(), rspList.end(), res);
+				if (it != rspList.end())
+				{
+					rspList.erase(it);
+				}
 			}
 		}
 		// std::cout << "Resource >> close fd : " <<instance->getFd() << std::endl;
