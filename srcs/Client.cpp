@@ -147,6 +147,8 @@ void Client::makeResponse()
 	{
 		if (getCStatus() == MAKE_RESPONSE)
 			m_response.makeDeleteResponse();
+		else if (getCStatus() == FILE_READ_DONE)
+			this->setCStatus(MAKE_RESPONSE_DONE);
 		return ;
 	}
 	

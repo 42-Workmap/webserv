@@ -282,10 +282,10 @@ void Response::makeDeleteResponse(void)
 				addServer();
 				addContentLength(0);
 				addEmptyLine();
+				m_client->setCStatus(MAKE_RESPONSE_DONE);
 			}
 		}
 	}
-	m_client->setCStatus(MAKE_RESPONSE_DONE);
 }
 
 void Response::makeErrorResponse(int errorcode)

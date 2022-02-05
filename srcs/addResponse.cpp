@@ -90,18 +90,6 @@ void Response::addErrorBody(int error)
 	m_client->setCStatus(MAKE_RESPONSE_DONE);
 }
 
-// void Response::addDefaultErrorBody(std::string &body, int errorcode)
-// {
-// 	body += "<!DOCTYPE html>\n";
-// 	body += "<html>\n";
-// 	body += "<head>\n";
-// 	body += "</head>\n";
-// 	body += "<body>";
-// 	body += std::to_string(errorcode);
-// 	body += "</body>\n";
-// 	body += "</html>\n";
-// }
-
 void Response::addServer(void)
 {
 	std::string server_name = m_client->getServer()->getServerName();
