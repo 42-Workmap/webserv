@@ -3,7 +3,7 @@
 Webserv::Webserv()
 {
 	this->m_fd_pool.resize(MAX_FD_SIZE, NULL);
-	this->m_timeout = 10000;
+	this->m_timeout = 700000;
 	std::cout << "Webserv constructor called" << std::endl;
 }
 
@@ -102,7 +102,8 @@ void Webserv::testServer(void)
 			curr_event = &m_return_events[i];
 			if (curr_event->flags & EV_ERROR)
 			{
-				error_handling("flag error need to improve");
+				std::cout << "error socket deleted" << std::endl;
+				deleteFdPool(m_fd_pool[curr_event->ident]);
 			}
 			else if (curr_event->filter == EVFILT_READ)
 			{
@@ -113,17 +114,23 @@ void Webserv::testServer(void)
 
 					if ((clnt_sock = accept(serv_fd, NULL, NULL)) == -1)
 					{
-						error_handling("accept() error");
+						std::cerr << "accept() error " << std::endl;
+						continue ;
 					}
 					fcntl(clnt_sock, F_SETFL, O_NONBLOCK);
 					struct timeval tv;
 					tv.tv_sec = 60;
 					tv.tv_usec = 0;
 					if (setsockopt(clnt_sock, SOL_SOCKET, SO_RCVTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
-						return (error_handling("recv time out set fail"));
+					{
+						std::cerr << "setsockop() recv_timeout error" << std::endl;
+						continue ;
+					}
 					if (setsockopt(clnt_sock, SOL_SOCKET, SO_SNDTIMEO, (struct timeval*)&tv, sizeof(struct timeval)) < 0)
-						return (error_handling("send time out set fail"));
-
+					{
+						std::cerr << "setsockop() send_timeout error" << std::endl;
+						continue ;
+					}
 					change_events(m_change_list, clnt_sock, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
 					change_events(m_change_list, clnt_sock, EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL);
 
@@ -139,8 +146,10 @@ void Webserv::testServer(void)
 					int n = 1;
 					memset(buf, 0, BUFSIZE);
 					if ((n = recv(curr_event->ident, buf, BUFSIZE-1, 0)) == -1)
-						error_handling("read() error");
-
+					{
+						std::cerr << "read client() error" << std::endl;
+						continue ;
+					}
 					if (n == 0)
 					{
 						deleteFdPool(m_fd_pool[curr_event->ident]);
@@ -167,7 +176,8 @@ void Webserv::testServer(void)
 						memset(buff, 0, BUFSIZE);
 						if ((n = read(curr_event->ident, buff, BUFSIZE-1)) < 0)
 						{
-							error_handling("read() error in Resources");
+							std::cerr << ("read() error in Resources") << std::endl;
+							continue ;
 						}
 						buff[n] = '\0';
 						rsc->getRawData() += buff;
@@ -190,7 +200,6 @@ void Webserv::testServer(void)
 				if (m_fd_pool[curr_event->ident]->getFdType() == FD_CLIENT)
 				{
 					Client* clnt = dynamic_cast<Client *>(m_fd_pool[curr_event->ident]);
-					std::cout << call_time() - clnt->getLastTime() << std::endl;
 					if (call_time() - clnt->getLastTime() > m_timeout)
 					{
 						if (clnt->getCStatus() == REQUEST_RECEIVING)
@@ -211,7 +220,10 @@ void Webserv::testServer(void)
 						Response &rsp = clnt->getResponse();
 						n = write(curr_event->ident, rsp.getMessage().c_str(), rsp.getMessage().length());
 						if (n < 0)
-							error_handling("client write() error");
+						{
+							std::cerr << "client write() error" << std::endl;
+							continue ;
+						}
 						if (n < rsp.getMessage().length())
 						{
 							rsp.getMessage().erase(0, n);
@@ -223,7 +235,6 @@ void Webserv::testServer(void)
 							else
 							{
 								clnt->setCStatus(REQUEST_RECEIVING);
-
 								clnt->initRequestandResponse();
 							}
 						}
@@ -236,7 +247,10 @@ void Webserv::testServer(void)
 					
 					n = write(curr_event->ident, res->getRawData().c_str(), (res->getRawData().length()));
 					if (n < 0)
-						error_handling("resource write error");
+					{
+						std::cerr << "resource write error" << std::endl;
+						continue ;
+					}
 					if (n < res->getRawData().length())
 					{
 						res->getRawData().erase(0,n);
