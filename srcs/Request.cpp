@@ -216,7 +216,6 @@ bool Request::makeBody(void)
     }
     else if (m_request_status == CHUNKED)
     {
-        std::cout << "Chunked()" << std::endl;
         size_t tmp;
         std::stringstream ss;
         std::size_t found = m_origin.find("\r\n");
@@ -272,7 +271,6 @@ bool Request::checkValidRequest(std::string fin)
     if (isValidMethod(loc) == false)
     {
         m_client->setCStatus(MAKE_RESPONSE);
-        std::cout << "405 error" <<std::endl;
         m_client->getResponse().makeErrorResponse(405);
         return (false);
     }

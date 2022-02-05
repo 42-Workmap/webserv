@@ -73,7 +73,7 @@ void Webserv::startServer()
 		/* 소켓에 주소 할당 */
 		if (bind(serv_sock, (struct sockaddr *)&serv_addr, sizeof(serv_addr)) == -1)
 			error_handling("bind() error");
-		if (listen(serv_sock, 1024) == -1) /* 연결 요청 대기 상태로 진입 */
+		if (listen(serv_sock, 100000) == -1) /* 연결 요청 대기 상태로 진입 */
 			error_handling("listen() error");
 		std::cout << it->second.getIp() << ":" << it->second.getPort() << " server on"<< "\n";
 		fcntl(serv_sock, F_SETFL, O_NONBLOCK);
@@ -147,7 +147,7 @@ void Webserv::testServer(void)
 					memset(buf, 0, BUFSIZE);
 					if ((n = recv(curr_event->ident, buf, BUFSIZE-1, 0)) == -1)
 					{
-						std::cerr << "read client() error" << std::endl;
+						deleteFdPool(m_fd_pool[curr_event->ident]);
 						continue ;
 					}
 					if (n == 0)

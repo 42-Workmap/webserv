@@ -5,8 +5,8 @@ CLEAR = \033[0m
 
 NAME = webserv
 CC = clang++ -std=c++98
-FLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
-# FLAGS = -Wall -Wextra -Werror -g
+# FLAGS = -Wall -Wextra -Werror -g3 -fsanitize=address
+FLAGS = -Wall -Wextra -Werror -g
 
 DIR_HEADER =	./incs/
 DIR_SRC =		./srcs/

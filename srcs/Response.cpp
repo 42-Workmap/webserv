@@ -189,6 +189,8 @@ void Response::makeGetResponse()
 	addStatusLine(200);
 	addDate();
 	m_message += "Content-Language: ko-kr\r\n";
+	m_message += "Connection: Keep-Alive\r\n";
+	m_message += "Keep-Alive: timeout=5, max=1000\r\n";
 
 	idx = m_resource_path.find_first_of('/');
 	idx = m_resource_path.find_first_of('.', idx);
