@@ -24,15 +24,17 @@ make
 
 ## 2. Features 
 - Nginx-like configuration file 
+- HTTP Protocol (ex. status line, request line...)
+- HTTP 1.1 Header
 - I/O multiplexing (kqueue)
-- Support for the GET, POST, DELETE HTTP methods 
+- GET, POST, DELETE HTTP methods 
 - HTTP redirections 
+- HTTP response status codes (ex. 200, 301...)
 - CGI implementation (ex. bla, php...)
 - Auto Index on/off
-- HTTP 1.1 Header
 
 
-### 3. Configuration File Example
+## 3. Configuration File Example
 
 ```
 server
@@ -64,4 +66,28 @@ server
 }
 
 ```
+- `server` : server block 
+- `listen` : port and ip
+- `location` : set for specific route
+- `error_page` : path for custom error page 
+- `allow_method` : allowed methods for HTTP requests
+- `index` : default file for the requested URI
+- `cgi_info` : cgi execute for specific file extension
+- `request_max_body_size` : max limit for request body size
+- `auth_key` : authorization needed
 
+## 4. Test
+- curl 
+```
+curl -X POST -H “Content-Type: plain/text” –data “BODY is here and write something longer or shorter than limit”
+```
+- Postman 
+- Browser 
+- Siege
+```shell
+# 소켓 제한을 풀어주는 명령어 
+sudo sysctl -w net.inet.tcp.msl=100
+
+# seige 명령어
+siege -b -R <(echo connection = keep-alive) -c100 127.0.0.1:8180
+```
