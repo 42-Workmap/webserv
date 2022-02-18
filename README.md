@@ -1,13 +1,15 @@
-# webserv
-
 <img width="515" alt="Screen Shot 2022-02-12 at 5 48 48 PM" src="https://user-images.githubusercontent.com/18901638/153704436-d6ae81a4-9a2d-4508-bc7e-a0020e94e7dd.png">
-
-
-## Description
+# webserv
 
 webserv is a I/O Multiplexing HTTP/1.1 server. 
 
-## Usage
+## Authors
+
+* [selim](https://github.com/seohl16)
+* [jiholee](https://github.com/zittoooo)
+
+
+## 1. Build & Usage
 
 ```shell
 # Compile the sources
@@ -18,7 +20,18 @@ make
 ./webserv [config_file]
 ```
 
-### Configuration File Example
+
+## 2. Features 
+- Nginx-like configuration file 
+- I/O multiplexing (kqueue)
+- Support for the GET, POST, DELETE HTTP methods 
+- HTTP redirections 
+- CGI implementation (ex. bla, php...)
+- Auto Index on/off
+- HTTP 1.1 Header
+
+
+### 3. Configuration File Example
 
 ```
 server
@@ -51,8 +64,3 @@ server
 
 ```
 
-
-## Authors
-
-* [selim](https://github.com/seohl16)
-* [jiholee](https://github.com/zittoooo)
