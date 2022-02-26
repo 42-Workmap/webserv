@@ -108,7 +108,7 @@ sudo sysctl -w net.inet.tcp.msl=100
 # seige 명령어
 siege -b -R <(echo connection = keep-alive) -c100 127.0.0.1:8180
 ```
-<img width="1000" alt="cgi" src="https://user-images.githubusercontent.com/18901638/155832738-35b79463-070a-4c44-9331-0fa319b8ba44.gif">
+<img width="1000" alt="seige" src="https://user-images.githubusercontent.com/18901638/155832738-35b79463-070a-4c44-9331-0fa319b8ba44.gif">
 
 <!-- ![siege](https://user-images.githubusercontent.com/18901638/155832738-35b79463-070a-4c44-9331-0fa319b8ba44.gif) -->
 
