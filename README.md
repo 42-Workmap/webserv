@@ -97,20 +97,24 @@ siege -b -R <(echo connection = keep-alive) -c100 127.0.0.1:8180
 
 ### 5.1. GET
 <img maxwidth='700' src='./flowchart/GET.png'>
+<br>
 
 
 ### 5.2. POST
 <img maxwidth='700' src='./flowchart/POST.png'>
+<br>
 
 
 ### 5.3. DELETE
 <img maxwidth='700' src='./flowchart/DELETE.png'>
-
+<br>
 
 ### 5.4. REDIRECTION
-<img width='500' src='./flowchart/REDIRECTION.png'>
+<img width='200' src='./flowchart/REDIRECTION.png'>
+<br>
 
 
 ### 5.5. CGI
 <img width='500' src='./flowchart/CGI.png'>
+<br>
 
