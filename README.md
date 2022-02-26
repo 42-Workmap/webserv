@@ -1,4 +1,4 @@
-<img width="515" alt="Screen Shot 2022-02-12 at 5 48 48 PM" src="https://user-images.githubusercontent.com/18901638/153704436-d6ae81a4-9a2d-4508-bc7e-a0020e94e7dd.png">
+<img width="800" alt="redirection" src="https://user-images.githubusercontent.com/18901638/155832146-811d8d83-968d-4af6-826d-118471362f41.gif">
 
 # webserv
 
@@ -103,7 +103,7 @@ curl -X POST -H “Content-Type: plain/text” –data “BODY is here and write
 ```
 localhost:8182
 ```
-<img width="1000" alt="get,delete" src="https://user-images.githubusercontent.com/18901638/155832146-811d8d83-968d-4af6-826d-118471362f41.gif">
+<img width="1000" alt="redirection" src="https://user-images.githubusercontent.com/18901638/155832146-811d8d83-968d-4af6-826d-118471362f41.gif">
 <!-- ![redirection](https://user-images.githubusercontent.com/18901638/155832146-811d8d83-968d-4af6-826d-118471362f41.gif) -->
 
 
