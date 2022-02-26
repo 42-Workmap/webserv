@@ -91,3 +91,26 @@ sudo sysctl -w net.inet.tcp.msl=100
 # seige 명령어
 siege -b -R <(echo connection = keep-alive) -c100 127.0.0.1:8180
 ```
+
+
+## 5. HTTP Method function explained with flowchart 
+
+### 5.1. GET
+<img maxwidth='700' src='./flowchart/GET.png'>
+
+
+### 5.2. POST
+<img maxwidth='700' src='./flowchart/POST.png'>
+
+
+### 5.3. DELETE
+<img maxwidth='700' src='./flowchart/DELETE.png'>
+
+
+### 5.4. REDIRECTION
+<img width='500' src='./flowchart/REDIRECTION.png'>
+
+
+### 5.5. CGI
+<img width='500' src='./flowchart/CGI.png'>
+
