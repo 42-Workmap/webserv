@@ -82,6 +82,12 @@ server
 curl -X POST -H “Content-Type: plain/text” –data “BODY is here and write something longer or shorter than limit”
 ```
 - Postman 
+![get,delete](https://user-images.githubusercontent.com/18901638/155831487-ccacbba3-032f-4adc-851f-6b45a6983ac1.gif)
+
+![post__640](https://user-images.githubusercontent.com/18901638/155831268-e4afb468-2e02-41c0-aae0-aba2b0a2fde0.gif)
+
+
+
 - Browser 
 - Siege
 ```shell
@@ -91,8 +97,6 @@ sudo sysctl -w net.inet.tcp.msl=100
 # seige 명령어
 siege -b -R <(echo connection = keep-alive) -c100 127.0.0.1:8180
 ```
-![post__640](https://user-images.githubusercontent.com/18901638/155831268-e4afb468-2e02-41c0-aae0-aba2b0a2fde0.gif)
-
 
 ## 5. HTTP Method function explained with flowchart 
 
