@@ -83,8 +83,14 @@ curl -X POST -H “Content-Type: plain/text” –data “BODY is here and write
 ```
 - Postman 
 
+```
+[POST] localhost:8179/index.html 
+```
 <img width="1000" alt="post" src="https://user-images.githubusercontent.com/18901638/155831992-8e27d06b-1a31-454e-8675-3c2371981d91.gif">
 
+```
+[GET/DELETE] localhost:8179/index
+```
 <img width="1000" alt="get,delete" src="https://user-images.githubusercontent.com/18901638/155831487-ccacbba3-032f-4adc-851f-6b45a6983ac1.gif">
 
 <!-- ![post__640](https://user-images.githubusercontent.com/18901638/155831268-e4afb468-2e02-41c0-aae0-aba2b0a2fde0.gif) -->
@@ -94,9 +100,16 @@ curl -X POST -H “Content-Type: plain/text” –data “BODY is here and write
 <!-- ![post!!!!!](https://user-images.githubusercontent.com/18901638/155831992-8e27d06b-1a31-454e-8675-3c2371981d91.gif) -->
 
 - Browser 
+```
+localhost:8182
+```
 <img width="1000" alt="get,delete" src="https://user-images.githubusercontent.com/18901638/155832146-811d8d83-968d-4af6-826d-118471362f41.gif">
 <!-- ![redirection](https://user-images.githubusercontent.com/18901638/155832146-811d8d83-968d-4af6-826d-118471362f41.gif) -->
 
+
+```
+localhost:8180/youpi.php
+```
 <img width="1000" alt="cgi" src="https://user-images.githubusercontent.com/68208055/155832473-5836add7-de0f-4770-a7d5-bdefc9fb0096.gif">
 
 
