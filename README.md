@@ -97,6 +97,8 @@ curl -X POST -H “Content-Type: plain/text” –data “BODY is here and write
 <img width="1000" alt="get,delete" src="https://user-images.githubusercontent.com/18901638/155832146-811d8d83-968d-4af6-826d-118471362f41.gif">
 <!-- ![redirection](https://user-images.githubusercontent.com/18901638/155832146-811d8d83-968d-4af6-826d-118471362f41.gif) -->
 
+<img width="1000" alt="cgi" src="https://user-images.githubusercontent.com/68208055/155832473-5836add7-de0f-4770-a7d5-bdefc9fb0096.gif">
+
 
 - Siege
 ```shell
