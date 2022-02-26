@@ -8,7 +8,7 @@ webserv is a I/O Multiplexing HTTP/1.1 server.
 
 * [selim](https://github.com/seohl16)
 * [jiholee](https://github.com/zittoooo)
-
+[노션 페이지](https://excited-kilogram-5f6.notion.site/2893d5376f1d4bdb98d8fddca3048dc8?v=3a0e8b56a903489fb4c82e2a21c7e5b7)
 
 ## 1. Build & Usage
 
