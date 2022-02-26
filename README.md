@@ -83,7 +83,7 @@ curl -X POST -H “Content-Type: plain/text” –data “BODY is here and write
 ```
 - Postman 
 
-<img width="515" alt="post" src="https://user-images.githubusercontent.com/18901638/155831268-e4afb468-2e02-41c0-aae0-aba2b0a2fde0.gif">
+<img width="515" alt="post" src="https://user-images.githubusercontent.com/18901638/155831992-8e27d06b-1a31-454e-8675-3c2371981d91.gif">
 
 <img width="515" alt="get,delete" src="https://user-images.githubusercontent.com/18901638/155831487-ccacbba3-032f-4adc-851f-6b45a6983ac1.gif">
 
@@ -92,6 +92,7 @@ curl -X POST -H “Content-Type: plain/text” –data “BODY is here and write
 
 <!-- ![get,delete](https://user-images.githubusercontent.com/18901638/155831487-ccacbba3-032f-4adc-851f-6b45a6983ac1.gif) -->
 
+<!-- ![post!!!!!](https://user-images.githubusercontent.com/18901638/155831992-8e27d06b-1a31-454e-8675-3c2371981d91.gif) -->
 
 - Browser 
 - Siege
