@@ -110,7 +110,7 @@ siege -b -R <(echo connection = keep-alive) -c100 127.0.0.1:8180
 <br>
 
 ### 5.4. REDIRECTION
-<img width='200' src='./flowchart/REDIRECTION.png'>
+<img width='400' src='./flowchart/REDIRECTION.png'>
 <br>
 
 
